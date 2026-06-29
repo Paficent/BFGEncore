@@ -51,8 +51,10 @@ func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
 		})
 	}
 	add(castle, 29, 9)
-	add(1, 35, 17)
-	add(2, 21, 3)
+	if islandID != 6 { // don't add breeding structure and nursery to gold island
+		add(1, 35, 17)
+		add(2, 21, 3)
+	}
 	if base := obstacleBase(islandID); base > 0 {
 		for i := range obstaclePosX {
 			add(int64(base+obstacleOffsets[i]), obstaclePosX[i], obstaclePosY[i])

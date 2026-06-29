@@ -61,11 +61,11 @@ func newPlayer(bbbID, userID int64, static *db.StaticData) *Player {
 		BBBID:        bbbID,
 		UserID:       userID,
 		DisplayName:  "New Player",
-		Coins:        10_000_000,
+		Coins:        750_000_000,
 		Diamonds:     1_000_000,
-		Food:         50_000_000,
+		Food:         250_000_000,
 		XP:           0,
-		Shards:       10_000_000,
+		Shards:       100_000_000,
 		Level:        1, // otherwise you get softlocked in tutorial cuz quest system still needs work
 		ActiveIsland: 1,
 		levelXP:      static.LevelXP,
@@ -144,6 +144,25 @@ func (p *Player) AddProperties(coins, diamonds, food, xp, shards int64) bool {
 
 func (p *Player) Buy(coins, diamonds, eth int64) bool {
 	return p.AddProperties(-coins, -diamonds, 0, 0, -eth)
+}
+
+func (p *Player) BuyInIsland(coins, diamonds, eth int64, island *Island) bool {
+	if diamonds > 0 {
+		if !p.Buy(0, int64(diamonds), 0) {
+			return false
+		}
+	} else {
+		if island.IsEthereal() {
+			if !p.Buy(0, 0, int64(eth)) {
+				return false
+			}
+		} else {
+			if !p.Buy(int64(coins), 0, 0) {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func (p *Player) NextEggID() int64 {

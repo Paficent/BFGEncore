@@ -145,11 +145,73 @@ func registerEconomyHandlers(m *Manager) {
 			PutBool("success", true))
 	})
 
+	m.HandlePlayer("gs_place_on_gold_island", func(ctx *Context, p *Player) {
+		umid := ctx.Int64("user_monster_id")
+		parentIslandID := ctx.Int64("user_parent_island_id")
+		x, y := ctx.Int("pos_x"), ctx.Int("pos_y")
+		flip := ctx.Int("flip")
+
+		var parentIsland *Island
+		for _, isl := range p.Islands {
+			if isl.UserIslandID == parentIslandID {
+				parentIsland = isl
+				break
+			}
+		}
+		if parentIsland == nil {
+			ctx.Reply("gs_place_on_gold_island", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("parent_id", parentIslandID))
+			return
+		}
+
+		mon := parentIsland.FindMonster(umid)
+		if mon == nil {
+			ctx.Reply("gs_place_on_gold_island", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("parent_id", parentIslandID))
+			return
+		}
+
+		var goldIsland *Island
+		for _, isl := range p.Islands {
+			if isl.IsGold() {
+				goldIsland = isl
+				break
+			}
+		}
+		if goldIsland == nil {
+			ctx.Reply("gs_place_on_gold_island", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("parent_id", parentIslandID))
+			return
+		}
+
+		giMonster := &GoldMonster{
+			UserMonsterID:   p.NextMonsterID(),
+			ParentMonsterID: umid,
+			MonsterID:       mon.MonsterID,
+			X:               x,
+			Y:               y,
+			Flip:            flip,
+			Level:           mon.Level,
+			Name:            mon.Name,
+			Volume:          mon.Volume,
+			Muted:           mon.Muted,
+		}
+		goldIsland.GoldMonsters = append(goldIsland.GoldMonsters, giMonster)
+
+		ctx.Reply("gs_place_on_gold_island", data.MakeGFSObject().
+			PutLong("success", 1).
+			PutLong("user_monster_id", umid).
+			PutLong("user_parent_island_id", parentIslandID).
+			PutGFSObject("monster", giMonster.GetSFSObject(goldIsland.UserIslandID)))
+	})
+
 	// success + the player's current properties (for some reason)
 	withProperties := []string{
 		"gs_collect_daily_reward",
 		"gs_collect_scratch_off",
-		"gs_place_on_gold_island",
 	}
 	for _, cmd := range withProperties {
 		m.HandleReply(cmd, func(ctx *Context) *data.GFSObject {

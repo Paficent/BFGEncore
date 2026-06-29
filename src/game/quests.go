@@ -274,12 +274,16 @@ func (m *Manager) questListFor(p *Player) *data.GFSArray {
 	m.ensureQuests(p)
 	out := data.MakeGFSArray()
 	for _, id := range m.Static.QuestOrder {
-		status, collected, isNew := "false", 0, 0
-		switch p.QuestStatus[id] {
+		status := p.QuestStatus[id]
+		if status == questCollected {
+			continue
+		}
+		statusStr, collected, isNew := "false", 0, 0
+		switch status {
 		case questComplete:
-			status = "true"
+			statusStr = "true"
 		case questCollected:
-			status, collected = "true", 1
+			statusStr, collected = "true", 1
 		case questActive:
 			if def := m.Static.QuestByID[id]; def != nil && def.Initial {
 				isNew = 1
@@ -289,7 +293,7 @@ func (m *Manager) questListFor(p *Player) *data.GFSArray {
 			PutInt("id", id).
 			PutInt("quest_id", id).
 			PutInt("user", 0).
-			PutUtfString("status", status).
+			PutUtfString("status", statusStr).
 			PutInt("collected", collected).
 			PutInt("new", isNew)
 		entry := data.MakeGFSArray()

@@ -17,7 +17,9 @@
 
 package game
 
-import "github.com/Paficent/GoFox2X/data"
+import (
+	"github.com/Paficent/GoFox2X/data"
+)
 
 func registerStructureHandlers(m *Manager) {
 	static := m.Static
@@ -30,7 +32,7 @@ func registerStructureHandlers(m *Manager) {
 			ctx.Fail("gs_buy_structure", "Unknown structure")
 			return
 		}
-		if !p.Buy(int64(info.CostCoins), int64(info.CostDiamonds), int64(info.CostEth)) {
+		if !p.BuyInIsland(int64(info.CostCoins), int64(info.CostDiamonds), int64(info.CostEth), island) {
 			return
 		}
 		now := nowMS()
@@ -63,7 +65,6 @@ func registerStructureHandlers(m *Manager) {
 			PutGFSObject("user_structure", s.GetSFSObject()))
 
 		// ctx.Reply("gs_update_structure", data.MakeGFSObject().PutGFSArray("structures", structures))
-
 	})
 
 	m.HandlePlayer("gs_sell_structure", func(ctx *Context, p *Player) {
@@ -95,10 +96,8 @@ func registerStructureHandlers(m *Manager) {
 		s.Flip = boolInt(s.Flip == 0)
 		props := data.MakeGFSArray()
 		props.AddSFSObject(data.MakeGFSObject().PutInt("flip", s.Flip))
-		ctx.Reply("gs_flip_structure", data.MakeGFSObject().
-			PutBool("success", true).
+		ctx.Reply("gs_update_structure", data.MakeGFSObject().
 			PutLong("user_structure_id", usid).
-			PutGFSObject("user_structure", s.GetSFSObject()).
 			PutGFSArray("properties", props))
 	})
 
@@ -111,10 +110,11 @@ func registerStructureHandlers(m *Manager) {
 			return
 		}
 		s.Muted = boolInt(s.Muted == 0)
-		ctx.Reply("gs_mute_structure", data.MakeGFSObject().
-			PutBool("success", true).
+		props := data.MakeGFSArray()
+		props.AddSFSObject(data.MakeGFSObject().PutInt("muted", s.Muted))
+		ctx.Reply("gs_update_structure", data.MakeGFSObject().
 			PutLong("user_structure_id", usid).
-			PutGFSObject("user_structure", s.GetSFSObject()))
+			PutGFSArray("properties", props))
 	})
 
 	m.HandlePlayer("gs_move_structure", func(ctx *Context, p *Player) {
@@ -147,6 +147,10 @@ func registerStructureHandlers(m *Manager) {
 			PutLong("user_structure_id", userStructureID).
 			PutGFSObject("user_structure", s.GetSFSObject()).
 			PutBool("success", true))
+
+		ctx.Reply("gs_update_structure", data.MakeGFSObject().
+			PutLong("user_structure_id", userStructureID).
+			PutGFSArray("properties", properties))
 	})
 
 	m.HandlePlayer("gs_start_upgrade_structure", func(ctx *Context, p *Player) {
@@ -329,9 +333,27 @@ func registerStructureHandlers(m *Manager) {
 	})
 
 	m.HandlePlayerRead("gs_collect_from_mine", func(ctx *Context, p *Player) {
-		usid := ctx.Int64("user_structure_id")
+		island := ctx.Island()
+		var mineStructure *Structure
+		for _, s := range island.Structures {
+			if _, ok := static.MineInfo[int(s.StructureID)]; ok {
+				mineStructure = s
+				break
+			}
+		}
+		if mineStructure == nil {
+			ctx.Reply("gs_collect_from_mine", data.MakeGFSObject().PutLong("success", 0))
+			return
+		}
+		// Timer does not reset for some reason, but at least the game does not crash
+		now := nowMS()
+		mine := static.MineInfo[int(mineStructure.StructureID)]
+		p.AddProperties(0, int64(mine.Diamonds), 0, 0, 0)
+		ctx.Reply("gs_update_properties", data.MakeGFSObject().PutGFSArray("properties", p.GetProperties()))
+		ctx.Reply("gs_collect_from_mine", data.MakeGFSObject().PutLong("success", 1))
 		ctx.Reply("gs_update_structure", data.MakeGFSObject().
-			PutLong("user_structure_id", usid).
+			PutLong("user_structure_id", mineStructure.UserStructureID).
+			PutLong("last_collection", now).
 			PutGFSArray("properties", p.GetProperties()))
 	})
 }
