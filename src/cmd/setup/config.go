@@ -21,37 +21,42 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"strconv"
+
+	"paficent/bfg/db"
 )
 
 type config struct {
-	Key        string `json:"key"`
-	IV         string `json:"iv"`
-	MaxPlayers int    `json:"max_players"`
-	ServerIP   string `json:"server_ip"`
-	GameAddr   string `json:"game_addr"`
-	AuthAddr   string `json:"auth_addr"`
-	DBPath     string `json:"db_path"`
-	SavePath   string `json:"save_path"`
-	DLCPath    string `json:"dlc_path"`
-	UsersPath  string `json:"users_path"`
-	LogPath    string `json:"log_path"`
-	RefreshLog bool   `json:"refresh_log"`
-	Debug      bool   `json:"debug"`
+	Key           string `json:"key"`
+	IV            string `json:"iv"`
+	MaxPlayers    int    `json:"max_players"`
+	ServerIP      string `json:"server_ip"`
+	GameAddr      string `json:"game_addr"`
+	AuthAddr      string `json:"auth_addr"`
+	DBPath        string `json:"db_path"`
+	SavePath      string `json:"save_path"`
+	DLCPath       string `json:"dlc_path"`
+	UsersPath     string `json:"users_path"`
+	LogPath       string `json:"log_path"`
+	ConstantsPath string `json:"constants_path"`
+	RefreshLog    bool   `json:"refresh_log"`
+	Debug         bool   `json:"debug"`
 }
 
 func defaults() config {
 	return config{
-		MaxPlayers: 200,
-		ServerIP:   "127.0.0.1",
-		GameAddr:   "0.0.0.0:9933",
-		AuthAddr:   "127.0.0.1:900",
-		DBPath:     "./db",
-		SavePath:   "./players.db",
-		DLCPath:    "./dlc",
-		UsersPath:  "./auth_users.json",
-		LogPath:    "./server.log",
-		RefreshLog: true,
+		MaxPlayers:    200,
+		ServerIP:      "127.0.0.1",
+		GameAddr:      "0.0.0.0:9933",
+		AuthAddr:      "127.0.0.1:900",
+		DBPath:        "./db",
+		SavePath:      "./players.db",
+		DLCPath:       "./dlc",
+		UsersPath:     "./auth_users.json",
+		LogPath:       "./server.log",
+		ConstantsPath: "./constants.json",
+		RefreshLog:    true,
 	}
 }
 
@@ -70,6 +75,23 @@ func genSecret(n int) string {
 
 func writeConfig(path string, c config) error {
 	b, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(path, append(b, '\n'), 0o600); err != nil {
+		return err
+	}
+	return ensureConstants(path)
+}
+
+func ensureConstants(configPath string) error {
+	path := filepath.Join(filepath.Dir(configPath), "constants.json")
+	if _, err := os.Stat(path); err == nil {
+		return nil
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	b, err := json.MarshalIndent(db.DefaultConstants(), "", "  ")
 	if err != nil {
 		return err
 	}
