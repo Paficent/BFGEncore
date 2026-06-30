@@ -33,13 +33,12 @@ func registerMonsterHandlers(m *Manager) {
 			ctx.Fail("gs_buy_egg", "Unknown monster")
 			return
 		}
-		if !p.Buy(int64(info.CostCoins), int64(info.CostDiamonds), int64(info.CostEth)) {
-			return
-		}
-
 		island := ctx.Island()
 		if island == nil {
 			ctx.Fail("gs_buy_egg", "Error")
+			return
+		}
+		if !p.BuyInIsland(int64(info.CostCoins), int64(info.CostDiamonds), int64(info.CostEth), island) {
 			return
 		}
 		nursery := island.FindStructureByType(1)
@@ -110,6 +109,10 @@ func registerMonsterHandlers(m *Manager) {
 			p.AddProperties(0, 0, 0, 150, 0)
 		}
 
+		ctx.Reply("gs_player", data.MakeGFSObject().
+			PutGFSObject("player_object", p.GetSFSObject()).
+			PutLong("server_time", now))
+
 		ctx.Reply("gs_hatch_egg", data.MakeGFSObject().
 			PutGFSArray("properties", p.GetProperties()).
 			PutLong("user_egg_id", userEggID).
@@ -124,10 +127,6 @@ func registerMonsterHandlers(m *Manager) {
 			PutBool("success", true).
 			PutLong("user_monster_id", monster.UserMonsterID).
 			PutGFSObject("monster", monster.GetSFSObject()))
-
-		ctx.Reply("gs_player", data.MakeGFSObject().
-			PutGFSObject("player_object", p.GetSFSObject()).
-			PutLong("server_time", now))
 	})
 
 	m.HandlePlayer("gs_speed_up_hatching", func(ctx *Context, p *Player) {
@@ -139,6 +138,11 @@ func registerMonsterHandlers(m *Manager) {
 			return
 		}
 		now := nowMS()
+		minutesRemaining := (egg.HatchesOn - now) / 1000 / 60
+		diamonds := (minutesRemaining + 59) / 60
+		if !p.Buy(0, int64(diamonds), 0) {
+			return
+		}
 		egg.HatchesOn = now
 		ctx.Reply("gs_speed_up_hatching", data.MakeGFSObject().
 			PutLong("success", 1).
@@ -157,7 +161,11 @@ func registerMonsterHandlers(m *Manager) {
 			return
 		}
 		if info, ok := static.MonsterBuy[int(egg.MonsterID)]; ok {
-			p.AddProperties(int64(info.CostCoins*3/4), int64(info.CostDiamonds*3/4), 0, 0, 0)
+			if island.IsEthereal() {
+				p.AddProperties(0, 0, 0, 0, int64(info.CostEth*3/4))
+			} else {
+				p.AddProperties(int64(info.CostCoins*3/4), 0, 0, 0, 0)
+			}
 		}
 		island.RemoveEgg(userEggID)
 		ctx.Reply("gs_sell_egg", data.MakeGFSObject().
@@ -295,6 +303,22 @@ func registerMonsterHandlers(m *Manager) {
 	m.HandlePlayer("gs_flip_monster", func(ctx *Context, p *Player) {
 		island := ctx.Island()
 		umid := ctx.Int64("user_monster_id")
+
+		if island.IsGold() {
+			gm := island.FindGoldMonster(umid)
+			if gm == nil {
+				ctx.Fail("gs_mute_monster", "Invalid monster ID")
+				return
+			}
+			gm.Flip = boolInt(gm.Flip == 0)
+			ctx.Reply("gs_flip_monster", data.MakeGFSObject().PutBool("success", true))
+			ctx.Reply("gs_update_monster", data.MakeGFSObject().
+				PutBool("success", true).
+				PutLong("user_monster_id", umid).
+				PutGFSObject("monster", gm.GetSFSObject(island.UserIslandID)).
+				PutInt("flip", gm.Flip))
+		}
+
 		mon := island.FindMonster(umid)
 		if mon == nil {
 			ctx.Fail("gs_flip_monster", "Invalid monster ID")
@@ -312,6 +336,22 @@ func registerMonsterHandlers(m *Manager) {
 	m.HandlePlayer("gs_mute_monster", func(ctx *Context, p *Player) {
 		island := ctx.Island()
 		umid := ctx.Int64("user_monster_id")
+
+		if island.IsGold() {
+			gm := island.FindGoldMonster(umid)
+			if gm == nil {
+				ctx.Fail("gs_mute_monster", "Invalid monster ID")
+				return
+			}
+			gm.Muted = boolInt(gm.Muted == 0)
+			ctx.Reply("gs_mute_monster", data.MakeGFSObject().PutBool("success", true))
+			ctx.Reply("gs_update_monster", data.MakeGFSObject().
+				PutBool("success", true).
+				PutLong("user_monster_id", umid).
+				PutGFSObject("monster", gm.GetSFSObject(island.UserIslandID)).
+				PutInt("muted", gm.Muted))
+		}
+
 		mon := island.FindMonster(umid)
 		if mon == nil {
 			ctx.Fail("gs_mute_monster", "Invalid monster ID")
@@ -384,7 +424,10 @@ func registerMonsterHandlers(m *Manager) {
 			}
 		}
 
-		ctx.Reply("gs_feed_monster", data.MakeGFSObject().PutBool("success", true))
+		ctx.Reply("gs_feed_monster", data.MakeGFSObject().
+			PutBool("success", true).
+			PutInt("times_fed", mon.TimesFed).
+			PutLong("user_monster_id", umid))
 
 		update := data.MakeGFSObject().
 			PutLong("user_monster_id", umid).
@@ -393,15 +436,11 @@ func registerMonsterHandlers(m *Manager) {
 			update.PutInt("level", mon.Level).
 				PutLong("last_collection", mon.LastCollection).
 				PutInt("collected_coins", mon.CollectedCoins).
-				PutInt("collected_ethereal", 0)
+				PutInt("collected_ethereal", 0).
+				PutGFSObject("monster", mon.GetSFSObject())
 		}
-		update.PutGFSObject("monster", mon.GetSFSObject()).
-			PutGFSArray("properties", p.GetProperties())
+		update.PutGFSArray("properties", p.GetProperties())
 		ctx.Reply("gs_update_monster", update)
-
-		// ctx.Reply("gs_update_properties", data.MakeGFSObject().
-		// 	PutBool("success", true).
-		// 	PutGFSArray("properties", p.GetProperties()))
 	})
 
 	m.HandlePlayer("gs_collect_monster", func(ctx *Context, p *Player) {
@@ -422,19 +461,38 @@ func registerMonsterHandlers(m *Manager) {
 		if lastCollection == 0 {
 			lastCollection = now
 		}
-		deltaSeconds := (now - lastCollection) / 5000
-		reward := int64(level.Coins)*deltaSeconds + int64(mon.CollectedCoins)
-		total := reward
-		if total > int64(level.MaxCoins) {
-			total = int64(level.MaxCoins)
+		deltaSeconds := (now - lastCollection) / 1000
+		mainCurrency := int64(level.Coins)
+		maxCurrency := int64(level.MaxCoins)
+		useShards := false
+		timeDivider := 60 // Normal monsters (coin givers) use per minute
+		if mainCurrency == 0 || maxCurrency == 0 {
+			mainCurrency = int64(level.Shards)
+			maxCurrency = int64(level.MaxShards)
+			useShards = true
+			timeDivider = 3600 // Ethereal monsters use per hour
 		}
-		p.AddProperties(total, 0, 0, 0, 0)
+		reward := (mainCurrency * deltaSeconds) / int64(timeDivider)
+		total := reward
+		if total > maxCurrency {
+			total = maxCurrency
+		}
+		if !useShards {
+			p.AddProperties(total, 0, 0, 0, 0)
+		} else {
+			p.AddProperties(0, 0, 0, 0, total)
+		}
 		mon.CollectedCoins = 0
 		mon.LastCollection = now
 
 		collectResp := data.MakeGFSObject().PutLong("user_monster_id", umid)
 		if total > 0 {
-			collectResp.PutLong("success", 1).PutInt("coins", int(total))
+			collectResp.PutLong("success", 1)
+			if !useShards {
+				collectResp.PutInt("coins", int(total))
+			} else {
+				collectResp.PutInt("ethereal_currency", int(total))
+			}
 		} else {
 			collectResp.PutLong("success", 0).PutUtfString("message", "nothing to collect")
 		}
@@ -453,6 +511,22 @@ func registerMonsterHandlers(m *Manager) {
 	m.HandlePlayer("gs_sell_monster", func(ctx *Context, p *Player) {
 		island := ctx.Island()
 		umid := ctx.Int64("user_monster_id")
+
+		if island.IsGold() {
+			for i, gm := range island.GoldMonsters {
+				if gm.UserMonsterID == umid {
+					island.GoldMonsters = append(island.GoldMonsters[:i], island.GoldMonsters[i+1:]...)
+					ctx.Reply("gs_sell_monster", data.MakeGFSObject().
+						PutBool("success", true).
+						PutLong("user_monster_id", umid).
+						PutGFSArray("properties", p.GetProperties()))
+					return
+				}
+			}
+			ctx.Fail("gs_sell_monster", "Invalid monster ID")
+			return
+		}
+
 		mon := island.FindMonster(umid)
 		if mon == nil {
 			ctx.Fail("gs_sell_monster", "Invalid monster ID")
@@ -516,5 +590,87 @@ func registerMonsterHandlers(m *Manager) {
 			PutLong("user_monster_id", umid).
 			PutGFSArray("properties", p.GetProperties()).
 			PutGFSObject("megamonster", mon.megaObject()))
+	})
+
+	m.HandlePlayer("gs_send_monster_home", func(ctx *Context, p *Player) {
+		umid := ctx.Int64("user_monster_id")
+		srcIsland := ctx.Island()
+		mon := srcIsland.FindMonster(umid)
+		if mon == nil {
+			ctx.Reply("gs_send_monster_home", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("has_egg", 0).
+				PutUtfString("message", "Monster not found"))
+			return
+		}
+		dest, ok := static.TeleportInfo[[2]int{int(srcIsland.IslandID), int(mon.MonsterID)}]
+		if !ok {
+			ctx.Reply("gs_send_monster_home", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("has_egg", 0).
+				PutUtfString("message", "No teleport destination for this monster"))
+			return
+		}
+		var dstIsland *Island
+		for _, isl := range p.Islands {
+			if isl.IslandID == int64(dest.DestIsland) {
+				dstIsland = isl
+				break
+			}
+		}
+		if dstIsland == nil {
+			ctx.Reply("gs_send_monster_home", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("has_egg", 0).
+				PutUtfString("message", "Player doesn't own destination island"))
+			return
+		}
+		nursery := dstIsland.FindStructureByType(1)
+		if nursery == nil {
+			ctx.Reply("gs_send_monster_home", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("has_egg", 0).
+				PutUtfString("message", "No nursery on destination island"))
+			return
+		}
+		for _, e := range dstIsland.Eggs {
+			if e.UserStructureID == nursery.UserStructureID {
+				ctx.Reply("gs_send_monster_home", data.MakeGFSObject().
+					PutLong("success", 0).
+					PutLong("has_egg", 1).
+					PutUtfString("message", "Nursery is occupied"))
+				return
+			}
+		}
+		info, ok := static.MonsterBuy[dest.DestMonster]
+		if !ok {
+			ctx.Reply("gs_send_monster_home", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("has_egg", 0).
+				PutUtfString("message", "Monster buy info not found"))
+			return
+		}
+		srcIsland.RemoveMonster(umid)
+		now := nowMS()
+		egg := &Egg{
+			IslandID:        dstIsland.UserIslandID,
+			LaidOn:          now,
+			HatchesOn:       now + int64(info.BuildTime)*1000,
+			MonsterID:       int64(dest.DestMonster),
+			UserEggID:       p.NextEggID(),
+			UserStructureID: nursery.UserStructureID,
+		}
+		dstIsland.Eggs = append(dstIsland.Eggs, egg)
+		ctx.Reply("gs_send_monster_home", data.MakeGFSObject().PutLong("success", 1).PutInt("sent_to_island", int(dstIsland.IslandID)).PutLong("user_monster_id", umid))
+
+		eggs := data.MakeGFSArray()
+		eggs.AddSFSObject(egg.GetSFSObject())
+		ctx.Reply("gs_update_eggs", data.MakeGFSObject().PutGFSArray("eggs", eggs))
+
+		ctx.Reply("gs_buy_egg", data.MakeGFSObject().
+			PutGFSObject("user_egg", egg.GetSFSObject()).
+			PutBool("success", true).
+			PutBool("remove_buyback", false).
+			PutGFSArray("properties", p.GetProperties()))
 	})
 }

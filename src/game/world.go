@@ -87,6 +87,19 @@ type Monster struct {
 	MegaFinish     int64
 }
 
+type GoldMonster struct {
+	UserMonsterID   int64   `json:"user_monster_id"`
+	ParentMonsterID int64   `json:"parent_monster_id"`
+	MonsterID       int64   `json:"monster_id"`
+	X               int     `json:"pos_x"`
+	Y               int     `json:"pos_y"`
+	Flip            int     `json:"flip"`
+	Level           int     `json:"level"`
+	Name            string  `json:"name"`
+	Volume          float64 `json:"volume"`
+	Muted           int     `json:"muted"`
+}
+
 func (m *Monster) GetSFSObject() *data.GFSObject {
 	obj := data.MakeGFSObject().
 		PutLong("user_monster_id", m.UserMonsterID).
@@ -115,6 +128,27 @@ func (m *Monster) GetSFSObject() *data.GFSObject {
 		obj.PutGFSObject("megamonster", m.megaObject())
 	}
 	return obj
+}
+
+func (gm *GoldMonster) GetSFSObject(islandID int64) *data.GFSObject {
+	return data.MakeGFSObject().
+		PutLong("user_monster_id", gm.UserMonsterID).
+		PutLong("user_island_id", islandID).
+		PutLong("island", islandID).
+		PutInt("monster", int(gm.MonsterID)).
+		PutInt("pos_x", gm.X).
+		PutInt("pos_y", gm.Y).
+		PutInt("flip", gm.Flip).
+		PutInt("level", gm.Level).
+		PutUtfString("name", gm.Name).
+		PutDouble("volume", gm.Volume).
+		PutInt("muted", gm.Muted).
+		PutInt("times_fed", 0).
+		PutInt("happiness", 0).
+		PutInt("collected_coins", 0).
+		PutInt("collected_ethereal", 0).
+		PutInt("in_hotel", 0).
+		PutBool("limited", false)
 }
 
 func (m *Monster) hasMega() bool {
@@ -180,6 +214,7 @@ type Island struct {
 	Dislikes     int
 	WarpSpeed    float64
 	Structures   []*Structure
+	GoldMonsters []*GoldMonster `json:"gold_monsters,omitempty"` // Don't break older saves
 	Monsters     []*Monster
 	Eggs         []*Egg
 	Breedings    []*Breeding
@@ -205,6 +240,15 @@ func (i *Island) FindStructureByType(structureID int64) *Structure {
 
 func (i *Island) FindMonster(userMonsterID int64) *Monster {
 	for _, m := range i.Monsters {
+		if m.UserMonsterID == userMonsterID {
+			return m
+		}
+	}
+	return nil
+}
+
+func (i *Island) FindGoldMonster(userMonsterID int64) *GoldMonster {
+	for _, m := range i.GoldMonsters {
 		if m.UserMonsterID == userMonsterID {
 			return m
 		}
@@ -295,8 +339,18 @@ func (i *Island) GetSFSObject() *data.GFSObject {
 		structures.AddSFSObject(s.GetSFSObject())
 	}
 	monsters := data.MakeGFSArray()
-	for _, m := range i.Monsters {
-		monsters.AddSFSObject(m.GetSFSObject())
+	giMappings := data.MakeGFSArray()
+	if i.IsGold() {
+		for _, gm := range i.GoldMonsters {
+			monsters.AddSFSObject(gm.GetSFSObject(i.UserIslandID))
+			giMappings.AddSFSObject(data.MakeGFSObject().
+				PutLong("user_monster", gm.ParentMonsterID).
+				PutLong("user_gi_monster", gm.UserMonsterID))
+		}
+	} else {
+		for _, m := range i.Monsters {
+			monsters.AddSFSObject(m.GetSFSObject())
+		}
 	}
 	eggs := data.MakeGFSArray()
 	for _, e := range i.Eggs {
@@ -313,6 +367,14 @@ func (i *Island) GetSFSObject() *data.GFSObject {
 		PutGFSArray("torches", data.MakeGFSArray()).
 		PutGFSArray("eggs", eggs).
 		PutGFSArray("baking", data.MakeGFSArray()).
-		PutGFSArray("gi_mappings", data.MakeGFSArray())
+		PutGFSArray("gi_mappings", giMappings)
 	return island
+}
+
+func (i *Island) IsGold() bool {
+	return i.IslandID == 6
+}
+
+func (i *Island) IsEthereal() bool {
+	return i.IslandID == 7
 }

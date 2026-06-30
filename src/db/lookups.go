@@ -17,7 +17,10 @@
 
 package db
 
-import "math/rand"
+import (
+	"encoding/json"
+	"math/rand"
+)
 
 type BuyInfo struct {
 	Entity       int
@@ -111,18 +114,22 @@ func (sd *StaticData) BreedingResult(monster1, monster2, level1, level2, playerL
 }
 
 type LevelInfo struct {
-	Food     int
-	Coins    int
-	MaxCoins int
+	Food      int
+	Coins     int
+	Shards    int
+	MaxCoins  int
+	MaxShards int
 }
 
 func loadMonsterLevels(db *DB) map[[2]int]LevelInfo {
 	out := map[[2]int]LevelInfo{}
 	for _, r := range db.Table("monster_levels") {
 		out[[2]int{r.Int("monster"), r.Int("level")}] = LevelInfo{
-			Food:     r.Int("food"),
-			Coins:    r.Int("coins"),
-			MaxCoins: r.Int("max_coins"),
+			Food:      r.Int("food"),
+			Coins:     r.Int("coins"),
+			Shards:    r.Int("ethereal_currency"),
+			MaxCoins:  r.Int("max_coins"),
+			MaxShards: r.Int("max_ethereal"),
 		}
 	}
 	return out
@@ -165,6 +172,40 @@ func loadStructureUpgrades(db *DB) map[int]int {
 		if up := r.Int("upgrades_to"); up != 0 {
 			out[r.Int("structure_id")] = up
 		}
+	}
+	return out
+}
+
+type MineInfo struct {
+	Time     int // Time in minutes for the mine to finish its job
+	Diamonds int
+}
+
+func loadMineInfo(db *DB) map[int]MineInfo {
+	out := map[int]MineInfo{}
+	for _, r := range db.Table("structures") {
+		if r.Str("structure_type") != "mine" {
+			continue
+		}
+		extra := r.Str("extra")
+		var m MineInfo
+		if err := json.Unmarshal([]byte(extra), &m); err != nil {
+			continue
+		}
+		out[r.Int("structure_id")] = m
+	}
+	return out
+}
+
+type TeleportDest struct {
+	DestIsland  int
+	DestMonster int
+}
+
+func loadTeleportInfo(db *DB) map[[2]int]TeleportDest {
+	out := map[[2]int]TeleportDest{}
+	for _, e := range db.Table("monster_island_2_island_map") {
+		out[[2]int{e.Int("source_island"), e.Int("source_monster")}] = TeleportDest{e.Int("dest_island"), e.Int("dest_monster")}
 	}
 	return out
 }
