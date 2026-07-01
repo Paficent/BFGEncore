@@ -288,22 +288,38 @@ func registerMonsterHandlers(m *Manager) {
 	m.HandlePlayer("gs_move_monster", func(ctx *Context, p *Player) {
 		island := ctx.Island()
 		umid := ctx.Int64("user_monster_id")
-		mon := island.FindMonster(umid)
-		if mon == nil {
-			ctx.Fail("gs_move_monster", "Invalid monster ID")
-			return
+
+		var x, y int
+		var volume float64
+
+		if island.IsGold() {
+			goldMon := island.FindGoldMonster(umid)
+			if goldMon == nil {
+				ctx.Fail("gs_move_monster", "Invalid monster ID")
+				return
+			}
+			goldMon.X = ctx.Int("pos_x")
+			goldMon.Y = ctx.Int("pos_y")
+			goldMon.Volume = ctx.Float("volume")
+			x, y, volume = goldMon.X, goldMon.Y, goldMon.Volume
+		} else {
+			mon := island.FindMonster(umid)
+			if mon == nil {
+				ctx.Fail("gs_move_monster", "Invalid monster ID")
+				return
+			}
+			mon.X = ctx.Int("pos_x")
+			mon.Y = ctx.Int("pos_y")
+			mon.Volume = ctx.Float("volume")
+			x, y, volume = mon.X, mon.Y, mon.Volume
 		}
-		mon.X = ctx.Int("pos_x")
-		mon.Y = ctx.Int("pos_y")
-		mon.Volume = ctx.Float("volume")
 
-		ctx.Reply("gs_move_monster", data.MakeGFSObject().PutBool("success", true))
-
+		ctx.Reply("gs_move_monster", data.MakeGFSObject().PutBool("success", true).PutInt("pos_x", x).PutInt("pos_y", y))
 		ctx.Reply("gs_update_monster", data.MakeGFSObject().
 			PutLong("user_monster_id", umid).
-			PutInt("pos_x", mon.X).
-			PutInt("pos_y", mon.Y).
-			PutDouble("volume", mon.Volume).
+			PutInt("pos_x", x).
+			PutInt("pos_y", y).
+			PutDouble("volume", volume).
 			PutGFSArray("properties", p.GetProperties()))
 	})
 
