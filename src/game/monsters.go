@@ -140,6 +140,7 @@ func registerMonsterHandlers(m *Manager) {
 
 		if !p.Buy(0, m.calculateSpeedupCost(p, userEggID, "egg"), 0) {
 			ctx.Fail("gs_speed_up_hatching", "Not Enough Diamonds!")
+			return
 		}
 
 		now := nowMS()
@@ -234,9 +235,7 @@ func registerMonsterHandlers(m *Manager) {
 		if !ok {
 			return
 		}
-		// if !p.Buy(int64(info.CostCoins), 0, int64(info.CostEth)) {
-		// 	return
-		// }
+
 		now := nowMS()
 		endTime := now + int64(info.BuildTime)*1000
 		island.RemoveBreeding(userBreedingID)
@@ -273,6 +272,7 @@ func registerMonsterHandlers(m *Manager) {
 		cost := m.calculateSpeedupCost(p, userBreedingID, "breeding")
 		if !p.Buy(0, cost, 0) {
 			ctx.Fail("gs_speed_up_breeding", "Not Enough Diamonds!")
+			return
 		}
 
 		now := nowMS()
