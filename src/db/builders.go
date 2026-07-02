@@ -18,6 +18,7 @@
 package db
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -219,9 +220,17 @@ func getStructures(db *DB) *data.GFSArray {
 	})
 }
 
-func getMonsters(db *DB) *data.GFSArray {
-	levelsByMonster := db.Group("monster_levels", "monster")
+func getMonsters(db *DB, levels map[[2]int]LevelInfo) *data.GFSArray {
 	now := nowMS()
+
+	levelsByMonster := map[int][]int{}
+	for key := range levels {
+		monsterID, lvl := key[0], key[1]
+		levelsByMonster[monsterID] = append(levelsByMonster[monsterID], lvl)
+	}
+	for _, lvls := range levelsByMonster {
+		sort.Ints(lvls)
+	}
 
 	return buildArray(db.Table("monsters"), func(r Row) *data.GFSObject {
 		monsterID := r.Int("monster_id")
@@ -279,18 +288,18 @@ func getMonsters(db *DB) *data.GFSArray {
 
 		addEntityData(db, monster, r.Int("entity"))
 
-		levels := data.MakeGFSArray()
-		for _, l := range levelsByMonster[monsterID] {
-			levels.AddSFSObject(data.MakeGFSObject().
-				PutInt("max_coins", l.Int("max_coins")).
-				PutInt("coins", l.Int("coins")).
-				PutInt("level", l.Int("level")).
-				PutInt("monster_level_id", l.Int("monster_level_id")).
-				PutInt("food", l.Int("food")).
-				PutInt("ethereal_currency", l.Int("ethereal_currency")).
-				PutInt("max_ethereal", l.Int("max_ethereal")))
+		levelsArr := data.MakeGFSArray()
+		for _, lvl := range levelsByMonster[monsterID] {
+			li := levels[[2]int{monsterID, lvl}]
+			levelsArr.AddSFSObject(data.MakeGFSObject().
+				PutInt("max_coins", li.MaxCoins).
+				PutInt("coins", li.Coins).
+				PutInt("level", lvl).
+				PutInt("food", li.Food).
+				PutInt("ethereal_currency", li.Shards).
+				PutInt("max_ethereal", li.MaxShards))
 		}
-		monster.PutGFSArray("levels", levels)
+		monster.PutGFSArray("levels", levelsArr)
 		return monster
 	})
 }

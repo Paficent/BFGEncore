@@ -123,13 +123,17 @@ type LevelInfo struct {
 
 func loadMonsterLevels(db *DB) map[[2]int]LevelInfo {
 	out := map[[2]int]LevelInfo{}
-	for _, r := range db.Table("monster_levels") {
-		out[[2]int{r.Int("monster"), r.Int("level")}] = LevelInfo{
-			Food:      r.Int("food"),
-			Coins:     r.Int("coins"),
-			Shards:    r.Int("ethereal_currency"),
-			MaxCoins:  r.Int("max_coins"),
-			MaxShards: r.Int("max_ethereal"),
+	for _, mlvls := range db.Table("monster_levels") {
+		for _, lvls := range mlvls.RawArray("levels") {
+			if lvl, ok := lvls.(map[string]any); ok {
+				out[[2]int{mlvls.Int("monster"), numToInt(lvl["level"])}] = LevelInfo{
+					Food:      numToInt(lvl["food"]),
+					Coins:     numToInt(lvl["coins"]),
+					Shards:    numToInt(lvl["ethereal_currency"]),
+					MaxCoins:  numToInt(lvl["max_coins"]),
+					MaxShards: numToInt(lvl["max_ethereal"]),
+				}
+			}
 		}
 	}
 	return out

@@ -64,12 +64,13 @@ type StaticData struct {
 func LoadStatic(db *DB) *StaticData {
 	questDefs, questByName, questByID := loadQuestDefs(db)
 	questStatic, questOrder := loadQuestStatics(db)
+	monLevels := loadMonsterLevels(db)
 	return &StaticData{
 		GameSettings: getGameSettings(db),
 		Genes:        getGenes(db),
 		Islands:      getIslands(db),
 		Torches:      getTorchData(db),
-		Monsters:     getMonsters(db),
+		Monsters:     getMonsters(db, monLevels),
 		Structures:   getStructures(db),
 		Levels:       getLevels(db),
 		ScratchOffs:  getScratchOffs(db),
@@ -97,8 +98,8 @@ func LoadStatic(db *DB) *StaticData {
 		StructureType:   loadStructureType(db),
 		FoodOptions:     loadFoodOptions(db),
 
+		monsterLevels:  monLevels,
 		breedingCombos: loadBreedingCombos(db),
-		monsterLevels:  loadMonsterLevels(db),
 
 		MineInfo:     loadMineInfo(db),
 		TeleportInfo: loadTeleportInfo(db),

@@ -98,6 +98,11 @@ func (r Row) Has(key string) bool {
 	return ok && v != nil
 }
 
+func (r Row) RawArray(key string) []any {
+	a, _ := r[key].([]any)
+	return a
+}
+
 func (r Row) JSON(key string) map[string]any { return decodeJSONMap(r.Str(key)) }
 
 func (r Row) JSONArray(key string) []any { return decodeJSONArray(r.Str(key)) }
