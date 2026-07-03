@@ -90,7 +90,7 @@ func (p *Player) handleLevelUp() {
 		}
 		if p.XP >= int64(nextXP) {
 			p.Level++
-			p.XP = 0
+			p.XP -= int64(nextXP)
 		} else {
 			break
 		}
