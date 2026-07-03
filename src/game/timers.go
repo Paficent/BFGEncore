@@ -105,15 +105,7 @@ func (m *Manager) completeUpgrade(bbbID, userStructureID int64) {
 	if s == nil || s.IsUpgrading == 0 {
 		return
 	}
-	now := nowMS()
-	if s.UpgradeTo != 0 {
-		s.StructureID = s.UpgradeTo
-	}
-	s.UpgradeTo = 0
-	s.IsUpgrading = 0
-	s.IsComplete = 1
-	s.DateCreated = now
-	s.LastCollection = now
+	m.finishUpgradeNow(p, s)
 
 	if err := m.savePlayer(p); err != nil {
 		log.Printf("save after upgrade complete failed: %v", err)
