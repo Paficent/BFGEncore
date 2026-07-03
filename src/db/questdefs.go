@@ -47,18 +47,14 @@ type QuestDef struct {
 func loadQuestDefs(db *DB) (defs []*QuestDef, byName map[string]*QuestDef, byID map[int]*QuestDef) {
 	byName = map[string]*QuestDef{}
 	byID = map[int]*QuestDef{}
-	for _, r := range db.Table("quests") {
+	for _, r := range db.Quests {
 		def := &QuestDef{
-			ID:      r.Int("id"),
-			Name:    r.Str("name"),
-			Initial: r.Int("initial") == 1,
-			Visible: !r.Has("visible") || r.Int("visible") != 0,
+			ID:      r.ID,
+			Name:    r.Name,
+			Initial: r.Initial == 1,
+			Visible: r.Visible == nil || *r.Visible != 0,
 		}
-		for _, g := range r.JSONArray("goals") {
-			gm, ok := g.(map[string]any)
-			if !ok {
-				continue
-			}
+		for _, gm := range r.Goals.V {
 			goal := QuestGoal{Eval: "==", Num: 1}
 			for k, v := range gm {
 				switch k {
@@ -67,7 +63,7 @@ func loadQuestDefs(db *DB) (defs []*QuestDef, byName map[string]*QuestDef, byID 
 						goal.Eval = s
 					}
 				case "num":
-					goal.Num = numToInt(v)
+					goal.Num = toInt(v)
 				default:
 					goal.Key = k
 					switch val := v.(type) {
@@ -75,10 +71,10 @@ func loadQuestDefs(db *DB) (defs []*QuestDef, byName map[string]*QuestDef, byID 
 						goal.Str = val
 					case []any:
 						for _, it := range val {
-							goal.List = append(goal.List, numToInt(it))
+							goal.List = append(goal.List, toInt(it))
 						}
 					default:
-						goal.Int = numToInt(v)
+						goal.Int = toInt(v)
 					}
 				}
 			}
@@ -87,21 +83,13 @@ func loadQuestDefs(db *DB) (defs []*QuestDef, byName map[string]*QuestDef, byID 
 			}
 			def.Goals = append(def.Goals, goal)
 		}
-		for _, n := range r.JSONArray("next") {
-			if s, ok := n.(string); ok {
-				def.Next = append(def.Next, s)
-			}
-		}
-		for _, rw := range r.JSONArray("rewards") {
-			m, ok := rw.(map[string]any)
-			if !ok {
-				continue
-			}
-			def.Rewards.Coins += numToInt(m["coins"])
-			def.Rewards.Diamonds += numToInt(m["diamonds"])
-			def.Rewards.Food += numToInt(m["food"])
-			def.Rewards.XP += numToInt(m["xp"])
-			def.Rewards.Eth += numToInt(m["ethereal_currency"])
+		def.Next = append(def.Next, r.Next.V...)
+		for _, m := range r.Rewards.V {
+			def.Rewards.Coins += toInt(m["coins"])
+			def.Rewards.Diamonds += toInt(m["diamonds"])
+			def.Rewards.Food += toInt(m["food"])
+			def.Rewards.XP += toInt(m["xp"])
+			def.Rewards.Eth += toInt(m["ethereal_currency"])
 		}
 		defs = append(defs, def)
 		byName[def.Name] = def
@@ -112,24 +100,24 @@ func loadQuestDefs(db *DB) (defs []*QuestDef, byName map[string]*QuestDef, byID 
 
 func loadMonsterEntity(db *DB) map[int]int {
 	out := map[int]int{}
-	for _, m := range db.Table("monsters") {
-		out[m.Int("monster_id")] = m.Int("entity")
+	for _, m := range db.Monsters {
+		out[m.ID] = m.Entity
 	}
 	return out
 }
 
 func loadStructureEntity(db *DB) map[int]int {
 	out := map[int]int{}
-	for _, s := range db.Table("structures") {
-		out[s.Int("structure_id")] = s.Int("entity")
+	for _, s := range db.Structures {
+		out[s.ID] = s.Entity
 	}
 	return out
 }
 
 func loadStructureType(db *DB) map[int]string {
 	out := map[int]string{}
-	for _, s := range db.Table("structures") {
-		out[s.Int("structure_id")] = s.Str("structure_type")
+	for _, s := range db.Structures {
+		out[s.ID] = s.Type
 	}
 	return out
 }
@@ -144,8 +132,8 @@ type FoodOption struct {
 
 func loadFoodOptions(db *DB) map[int][]FoodOption {
 	out := map[int][]FoodOption{}
-	for _, s := range db.Table("structures") {
-		opts, ok := s.JSON("extra")["food_options"].([]any)
+	for _, s := range db.Structures {
+		opts, ok := s.Extra.V["food_options"].([]any)
 		if !ok {
 			continue
 		}
@@ -155,16 +143,15 @@ func loadFoodOptions(db *DB) map[int][]FoodOption {
 			if !ok {
 				continue
 			}
-			label, _ := m["label"].(string)
 			list = append(list, FoodOption{
-				Food:  numToInt(m["food"]),
-				Cost:  numToInt(m["cost"]),
-				Time:  numToInt(m["time"]),
-				Xp:    numToInt(m["xp"]),
-				Label: label,
+				Food:  toInt(m["food"]),
+				Cost:  toInt(m["cost"]),
+				Time:  toInt(m["time"]),
+				Xp:    toInt(m["xp"]),
+				Label: jstr(m["label"]),
 			})
 		}
-		out[s.Int("structure_id")] = list
+		out[s.ID] = list
 	}
 	return out
 }

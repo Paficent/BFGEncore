@@ -14,77 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package db
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"github.com/Paficent/GoFox2X/data"
-)
-
-func addValue(arr *data.GFSArray, v any) {
-	switch x := v.(type) {
-	case bool:
-		arr.AddBool(x)
-	case json.Number:
-		if isIntNumber(x) {
-			i, _ := x.Int64()
-			arr.AddInt(int(i))
-		} else {
-			f, _ := x.Float64()
-			arr.AddDouble(f)
-		}
-	case string:
-		arr.AddUtfString(x)
-	case map[string]any:
-		sub := data.MakeGFSObject()
-		putValues(sub, x)
-		arr.AddSFSObject(sub)
-	case []any:
-		nested := data.MakeGFSArray()
-		for _, item := range x {
-			addValue(nested, item)
-		}
-		arr.AddSFSArray(nested)
-	default:
-		arr.AddUtfString(fmt.Sprint(x))
-	}
-}
-
-func putJSONValue(obj *data.GFSObject, k string, v any) {
-	switch val := v.(type) {
-	case json.Number:
-		if isIntNumber(val) {
-			i, _ := val.Int64()
-			obj.PutInt(k, int(i))
-		}
-	case string:
-		obj.PutUtfString(k, val)
-	case []any:
-		sub := data.MakeGFSArray()
-		for _, item := range val {
-			addValue(sub, item)
-		}
-		obj.PutGFSArray(k, sub)
-	}
-}
+import "github.com/Paficent/GoFox2X/data"
 
 func getQuests(db *DB) *data.GFSArray {
-	return buildArray(db.Table("quests"), func(r Row) *data.GFSObject {
-		id := r.Int("id")
-		log := questLogObject(id, "false", 0, r.Int("initial"))
-		return questEntryWrap(id, log, questStaticObject(r))
+	return buildArray(db.Quests, func(r Quest) *data.GFSObject {
+		log := questLogObject(r.ID, "false", 0, r.Initial)
+		return questEntryWrap(r.ID, log, questStaticObject(r))
 	})
 }
 
 func loadQuestStatics(db *DB) (map[int]*data.GFSObject, []int) {
 	statics := map[int]*data.GFSObject{}
 	var order []int
-	for _, r := range db.Table("quests") {
-		id := r.Int("id")
-		statics[id] = questStaticObject(r)
-		order = append(order, id)
+	for _, r := range db.Quests {
+		statics[r.ID] = questStaticObject(r)
+		order = append(order, r.ID)
 	}
 	return statics, order
 }
@@ -109,52 +56,47 @@ func questEntryWrap(id int, log, static *data.GFSObject) *data.GFSObject {
 		PutLong("id", int64(id))
 }
 
-func questStaticObject(r Row) *data.GFSObject {
-	id := r.Int("id")
+func questStaticObject(r Quest) *data.GFSObject {
 	static := data.MakeGFSObject().
-		PutInt("id", id).
-		PutUtfString("name", r.Str("name")).
-		PutUtfString("description", r.Str("description")).
-		PutUtfString("type", r.Str("type"))
+		PutInt("id", r.ID).
+		PutUtfString("name", r.Name).
+		PutUtfString("description", r.Description).
+		PutUtfString("type", r.Type)
 
 	goals := data.MakeGFSArray()
-	for _, g := range r.JSONArray("goals") {
-		gm, ok := g.(map[string]any)
-		if !ok {
-			continue
-		}
+	for _, g := range r.Goals.V {
 		goal := data.MakeGFSObject()
-		for k, v := range gm {
-			putJSONValue(goal, k, v)
+		for k, v := range g {
+			putDynamic(goal, k, v)
 		}
 		goals.AddSFSObject(goal)
 	}
 	static.PutGFSArray("goals", goals)
 
 	next := data.MakeGFSArray()
-	for _, item := range r.JSONArray("next") {
-		if name, ok := item.(string); ok {
-			next.AddSFSObject(data.MakeGFSObject().PutUtfString("quest", name))
-		}
+	for _, name := range r.Next.V {
+		next.AddSFSObject(data.MakeGFSObject().PutUtfString("quest", name))
 	}
 	static.PutGFSArray("next", next)
 
 	rewards := data.MakeGFSObject()
-	if arr := r.JSONArray("rewards"); len(arr) > 0 {
-		if m, ok := arr[0].(map[string]any); ok {
-			for k, v := range m {
-				putJSONValue(rewards, k, v)
-			}
+	if len(r.Rewards.V) > 0 {
+		for k, v := range r.Rewards.V[0] {
+			putDynamic(rewards, k, v)
 		}
 	}
 	static.PutGFSObject("rewards", rewards)
 
-	static.PutUtfString("sheet", r.Str("sheet")).
-		PutUtfString("image", r.Str("image")).
-		PutInt("visible", r.Int("visible")).
-		PutUtfString("min_server_version", r.Str("min_server_version"))
-	if c := r.Str("comment"); c != "" {
-		static.PutUtfString("comment", c)
+	visible := 0
+	if r.Visible != nil {
+		visible = *r.Visible
+	}
+	static.PutUtfString("sheet", r.Sheet).
+		PutUtfString("image", r.Image).
+		PutInt("visible", visible).
+		PutUtfString("min_server_version", r.MinServer)
+	if r.Comment != "" {
+		static.PutUtfString("comment", r.Comment)
 	}
 	return static
 }
@@ -164,13 +106,12 @@ func getTimedEvents(db *DB) *data.GFSArray {
 	const oneYearMS = int64(60*60*24*365) * 1000
 	endDate := now + oneYearMS
 
-	return buildArray(db.Table("entities"), func(r Row) *data.GFSObject {
-		if r.Int("view_in_market") == 1 {
+	return buildArray(db.Entities, func(e Entity) *data.GFSObject {
+		if bool(e.ViewInMarket) {
 			return nil
 		}
-		eid := r.Int("entity_id")
 		eventData := data.MakeGFSArray()
-		eventData.AddSFSObject(data.MakeGFSObject().PutInt("entity", eid))
+		eventData.AddSFSObject(data.MakeGFSObject().PutInt("entity", e.ID))
 
 		return data.MakeGFSObject().
 			PutLong("end_date", endDate).
@@ -178,7 +119,7 @@ func getTimedEvents(db *DB) *data.GFSArray {
 			PutUtfString("event_type", "EntityStoreAvailability").
 			PutInt("event_id", 3).
 			PutGFSArray("data", eventData).
-			PutLong("id", int64(200000+eid)).
+			PutLong("id", int64(200000+e.ID)).
 			PutLong("start_date", now)
 	})
 }

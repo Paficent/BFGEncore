@@ -20,117 +20,34 @@ package db
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
-	"time"
-
-	"github.com/Paficent/GoFox2X/data"
 )
 
-// TODO: rewrite store_data.json to not just used strings
-type Row map[string]any
-
-func (r Row) Str(key string) string {
-	switch v := r[key].(type) {
-	case nil:
-		return ""
-	case string:
-		return v
-	case json.Number:
-		return v.String()
-	case bool:
-		if v {
-			return "true"
-		}
-		return "false"
-	default:
-		return fmt.Sprint(v)
-	}
-}
-
-func (r Row) Int(key string) int {
-	switch v := r[key].(type) {
-	case json.Number:
-		i, _ := v.Int64()
-		return int(i)
-	case string:
-		s := strings.TrimSpace(v)
-		if s == "" {
-			return 0
-		}
-		if i, err := strconv.ParseInt(s, 10, 64); err == nil {
-			return int(i)
-		}
-		if f, err := strconv.ParseFloat(s, 64); err == nil {
-			return int(f)
-		}
-	case float64:
-		return int(v)
-	case bool:
-		if v {
-			return 1
-		}
-	}
-	return 0
-}
-
-func (r Row) Float(key string) float64 {
-	switch v := r[key].(type) {
-	case json.Number:
-		f, _ := v.Float64()
-		return f
-	case float64:
-		return v
-	case string:
-		f, _ := strconv.ParseFloat(strings.TrimSpace(v), 64)
-		return f
-	}
-	return 0
-}
-
-func (r Row) Bool(key string) bool { return r.Int(key) != 0 }
-
-func (r Row) Has(key string) bool {
-	v, ok := r[key]
-	return ok && v != nil
-}
-
-func (r Row) RawArray(key string) []any {
-	a, _ := r[key].([]any)
-	return a
-}
-
-func (r Row) JSON(key string) map[string]any { return decodeJSONMap(r.Str(key)) }
-
-func (r Row) JSONArray(key string) []any { return decodeJSONArray(r.Str(key)) }
-
 type DB struct {
-	tables map[string][]Row
-	entIdx map[int]Row
-}
+	Genes            []Gene
+	Levels           []Level
+	ScratchOffs      []ScratchOff
+	Torches          []Torch
+	GameSettings     []GameSetting
+	Islands          []Island
+	IslandMonsters   []IslandMonster
+	IslandStructures []IslandStructure
+	Entities         []Entity
+	Structures       []Structure
+	Monsters         []Monster
+	MonsterLevels    []MonsterLevel
+	Breeding         []BreedingCombo
+	Quests           []Quest
+	StoreGroups      []StoreGroup
+	StoreCurrencies  []StoreCurrency
+	Store            []StoreItem
+	Teleports        []Teleport
 
-func (db *DB) Table(name string) []Row { return db.tables[name] }
-
-func (db *DB) Group(table, key string) map[int][]Row {
-	out := map[int][]Row{}
-	for _, r := range db.tables[table] {
-		out[r.Int(key)] = append(out[r.Int(key)], r)
-	}
-	return out
-}
-
-func (db *DB) entityByID(id int) (Row, bool) {
-	if db.entIdx == nil {
-		db.entIdx = map[int]Row{}
-		for _, r := range db.tables["entities"] {
-			db.entIdx[r.Int("entity_id")] = r
-		}
-	}
-	r, ok := db.entIdx[id]
-	return r, ok
+	entityIndex map[int]Entity
 }
 
 func Open(dir string) (*DB, error) {
@@ -139,124 +56,90 @@ func Open(dir string) (*DB, error) {
 		return nil, err
 	}
 	if !info.IsDir() {
-		return nil, fmt.Errorf("%s is not a directory of table JSON files", dir)
-	}
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s is not a directory of table files", dir)
 	}
 
-	db := &DB{tables: map[string][]Row{}}
-	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".json") {
-			continue
-		}
-		b, err := os.ReadFile(filepath.Join(dir, e.Name()))
-		if err != nil {
-			return nil, fmt.Errorf("read %s: %w", e.Name(), err)
-		}
-		rows, err := decodeRows(b)
-		if err != nil {
-			return nil, fmt.Errorf("parse %s: %w", e.Name(), err)
-		}
-		db.tables[strings.TrimSuffix(e.Name(), ".json")] = rows
+	l := &loader{dir: dir}
+	db := &DB{
+		Genes:            read[Gene](l, "genes"),
+		Levels:           read[Level](l, "level_xp"),
+		ScratchOffs:      read[ScratchOff](l, "scratch_offs"),
+		Torches:          read[Torch](l, "island_torches"),
+		GameSettings:     read[GameSetting](l, "game_settings"),
+		Islands:          read[Island](l, "islands"),
+		IslandMonsters:   read[IslandMonster](l, "island_monsters"),
+		IslandStructures: read[IslandStructure](l, "island_structures"),
+		Entities:         read[Entity](l, "entities"),
+		Structures:       read[Structure](l, "structures"),
+		Monsters:         read[Monster](l, "monsters"),
+		MonsterLevels:    read[MonsterLevel](l, "monster_levels"),
+		Breeding:         read[BreedingCombo](l, "breeding_combinations"),
+		Quests:           read[Quest](l, "quests"),
+		StoreGroups:      read[StoreGroup](l, "store_groups"),
+		StoreCurrencies:  read[StoreCurrency](l, "store_currency"),
+		Store:            read[StoreItem](l, "store_data"),
+		Teleports:        read[Teleport](l, "monster_island_2_island_map"),
 	}
+	if l.err != nil {
+		return nil, l.err
+	}
+
+	db.entityIndex = indexBy(db.Entities, func(e Entity) int { return e.ID })
 	return db, nil
 }
 
-func decodeRows(b []byte) ([]Row, error) {
+func (db *DB) entity(id int) (Entity, bool) {
+	e, ok := db.entityIndex[id]
+	return e, ok
+}
+
+type loader struct {
+	dir string
+	err error
+}
+
+func read[T any](l *loader, name string) []T {
+	if l.err != nil {
+		return nil
+	}
+	rows, err := loadTable[T](l.dir, name)
+	if err != nil {
+		l.err = err
+	}
+	return rows
+}
+
+func loadTable[T any](dir, name string) ([]T, error) {
+	b, err := os.ReadFile(filepath.Join(dir, name+".json"))
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
 	if len(bytes.TrimSpace(b)) == 0 {
 		return nil, nil
 	}
-	dec := json.NewDecoder(bytes.NewReader(b))
-	dec.UseNumber()
-	var rows []Row
-	if err := dec.Decode(&rows); err != nil {
-		return nil, err
+	var rows []T
+	if err := json.Unmarshal(b, &rows); err != nil {
+		return nil, fmt.Errorf("parse %s: %w", name, err)
 	}
 	return rows, nil
 }
 
-// builder helpers:
-func nowMS() int64 { return time.Now().Unix() * 1000 }
-
-func buildArray(rows []Row, fn func(Row) *data.GFSObject) *data.GFSArray {
-	arr := data.MakeGFSArray()
+func groupBy[T any, K comparable](rows []T, key func(T) K) map[K][]T {
+	out := map[K][]T{}
 	for _, r := range rows {
-		if obj := fn(r); obj != nil {
-			arr.AddSFSObject(obj)
-		}
+		k := key(r)
+		out[k] = append(out[k], r)
 	}
-	return arr
+	return out
 }
 
-func putValue(obj *data.GFSObject, key string, v any) {
-	switch val := v.(type) {
-	case bool:
-		obj.PutBool(key, val)
-	case json.Number:
-		if isIntNumber(val) {
-			i, _ := val.Int64()
-			obj.PutInt(key, int(i))
-		} else {
-			f, _ := val.Float64()
-			obj.PutDouble(key, f)
-		}
-	case string:
-		obj.PutUtfString(key, val)
-	case map[string]any:
-		sub := data.MakeGFSObject()
-		putValues(sub, val)
-		obj.PutGFSObject(key, sub)
-	case []any:
-		arr := data.MakeGFSArray()
-		for _, item := range val {
-			addValue(arr, item)
-		}
-		obj.PutGFSArray(key, arr)
-	default:
-		obj.PutUtfString(key, fmt.Sprint(val))
+func indexBy[T any, K comparable](rows []T, key func(T) K) map[K]T {
+	out := make(map[K]T, len(rows))
+	for _, r := range rows {
+		out[key(r)] = r
 	}
-}
-
-func putValues(obj *data.GFSObject, m map[string]any) {
-	for k, v := range m {
-		putValue(obj, k, v)
-	}
-}
-
-func isIntNumber(n json.Number) bool { return !strings.ContainsAny(string(n), ".eE") }
-
-func numToInt(v any) int {
-	if n, ok := v.(json.Number); ok {
-		i, _ := n.Int64()
-		return int(i)
-	}
-	return 0
-}
-
-func decodeJSONMap(s string) map[string]any {
-	if strings.TrimSpace(s) == "" {
-		return nil
-	}
-	dec := json.NewDecoder(strings.NewReader(s))
-	dec.UseNumber()
-	var m map[string]any
-	if dec.Decode(&m) != nil {
-		return nil
-	}
-	return m
-}
-
-func decodeJSONArray(s string) []any {
-	if strings.TrimSpace(s) == "" {
-		return nil
-	}
-	dec := json.NewDecoder(strings.NewReader(s))
-	dec.UseNumber()
-	var a []any
-	if dec.Decode(&a) != nil {
-		return nil
-	}
-	return a
+	return out
 }

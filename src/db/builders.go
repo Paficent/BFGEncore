@@ -26,13 +26,6 @@ import (
 	"github.com/Paficent/GoFox2X/data"
 )
 
-func jstr(v any) string {
-	if s, ok := v.(string); ok {
-		return s
-	}
-	return ""
-}
-
 func parseLastChanged(s string) int64 {
 	if strings.TrimSpace(s) == "" {
 		return nowMS()
@@ -48,45 +41,45 @@ func parseLastChanged(s string) int64 {
 
 func getGenes(db *DB) *data.GFSArray {
 	now := nowMS()
-	return buildArray(db.Table("genes"), func(r Row) *data.GFSObject {
+	return buildArray(db.Genes, func(g Gene) *data.GFSObject {
 		return data.MakeGFSObject().
-			PutUtfString("gene_letter", r.Str("gene_letter")).
-			PutUtfString("gene_graphic", r.Str("gene_graphic")).
-			PutUtfString("min_server_version", r.Str("min_server_version")).
-			PutInt("gene_id", r.Int("gene_id")).
+			PutUtfString("gene_letter", g.Letter).
+			PutUtfString("gene_graphic", g.Graphic).
+			PutUtfString("min_server_version", g.MinServer).
+			PutInt("gene_id", g.ID).
 			PutLong("last_changed", now)
 	})
 }
 
 func getLevels(db *DB) *data.GFSArray {
-	return buildArray(db.Table("level_xp"), func(r Row) *data.GFSObject {
+	return buildArray(db.Levels, func(l Level) *data.GFSObject {
 		return data.MakeGFSObject().
-			PutInt("level", r.Int("level")).
-			PutInt("xp", r.Int("xp")).
-			PutInt("max_bakeries", r.Int("max_bakeries"))
+			PutInt("level", l.Level).
+			PutInt("xp", l.XP).
+			PutInt("max_bakeries", l.MaxBakeries)
 	})
 }
 
 func getScratchOffs(db *DB) *data.GFSArray {
-	return buildArray(db.Table("scratch_offs"), func(r Row) *data.GFSObject {
+	return buildArray(db.ScratchOffs, func(s ScratchOff) *data.GFSObject {
 		return data.MakeGFSObject().
-			PutInt("id", r.Int("id")).
-			PutInt("scratch_id", r.Int("id")).
-			PutUtfString("type", r.Str("type")).
-			PutUtfString("prize", r.Str("prize")).
-			PutInt("amount", r.Int("amount")).
-			PutInt("probability", r.Int("probability")).
-			PutInt("is_top_prize", r.Int("is_top_prize")).
-			PutUtfString("min_server_version", r.Str("min_server_version"))
+			PutInt("id", s.ID).
+			PutInt("scratch_id", s.ID).
+			PutUtfString("type", s.Type).
+			PutUtfString("prize", s.Prize).
+			PutInt("amount", s.Amount).
+			PutInt("probability", s.Probability).
+			PutInt("is_top_prize", s.IsTopPrize).
+			PutUtfString("min_server_version", s.MinServer)
 	})
 }
 
 func getTorchData(db *DB) *data.GFSArray {
-	return buildArray(db.Table("island_torches"), func(r Row) *data.GFSObject {
+	return buildArray(db.Torches, func(t Torch) *data.GFSObject {
 		return data.MakeGFSObject().
-			PutInt("island_id", r.Int("island_id")).
-			PutUtfString("torch_graphic", r.Str("torch_graphic")).
-			PutLong("last_changed", parseLastChanged(r.Str("last_changed")))
+			PutInt("island_id", t.IslandID).
+			PutUtfString("torch_graphic", t.Graphic).
+			PutLong("last_changed", parseLastChanged(t.LastChanged))
 	})
 }
 
@@ -121,14 +114,13 @@ var gameSettingDefaults = [][2]string{
 func getGameSettings(db *DB) *data.GFSArray {
 	arr := data.MakeGFSArray()
 	existing := map[string]bool{}
-	for _, r := range db.Table("game_settings") {
-		setting := r.Str("setting")
-		existing[setting] = true
+	for _, s := range db.GameSettings {
+		existing[s.Setting] = true
 		arr.AddSFSObject(data.MakeGFSObject().
-			PutUtfString("key", setting).
-			PutUtfString("value", r.Str("value")))
+			PutUtfString("key", s.Setting).
+			PutUtfString("value", s.Value))
 	}
-	for _, kv := range gameSettingDefaults { //potentially not necessary
+	for _, kv := range gameSettingDefaults {
 		if !existing[kv[0]] {
 			arr.AddSFSObject(data.MakeGFSObject().
 				PutUtfString("key", kv[0]).
@@ -139,32 +131,31 @@ func getGameSettings(db *DB) *data.GFSArray {
 }
 
 func getIslands(db *DB) *data.GFSArray {
-	monstersByIsland := db.Group("island_monsters", "island")
-	structuresByIsland := db.Group("island_structures", "island")
+	monstersByIsland := groupBy(db.IslandMonsters, func(m IslandMonster) int { return m.Island })
+	structuresByIsland := groupBy(db.IslandStructures, func(s IslandStructure) int { return s.Island })
 	now := nowMS()
 
-	return buildArray(db.Table("islands"), func(r Row) *data.GFSObject {
-		islandID := r.Int("island_id")
+	return buildArray(db.Islands, func(r Island) *data.GFSObject {
 		island := data.MakeGFSObject().
-			PutInt("id", islandID).
-			PutInt("island_id", islandID).
-			PutInt("island_type", islandID).
-			PutUtfString("name", r.Str("name")).
-			PutUtfString("description", r.Str("description")).
-			PutUtfString("genes", r.Str("genes")).
-			PutUtfString("midi", r.Str("midi")).
-			PutUtfString("min_server_version", r.Str("min_server_version")).
+			PutInt("id", r.ID).
+			PutInt("island_id", r.ID).
+			PutInt("island_type", r.ID).
+			PutUtfString("name", r.Name).
+			PutUtfString("description", r.Description).
+			PutUtfString("genes", r.Genes).
+			PutUtfString("midi", r.Midi).
+			PutUtfString("min_server_version", r.MinServer).
 			PutLong("last_changed", now).
 			PutUtfString("fb_object_id", "").
 			PutInt("enabled", 1).
-			PutInt("level", r.Int("level")).
-			PutInt("cost_coins", r.Int("cost_coins")).
-			PutInt("cost_diamonds", r.Int("cost_diamonds")).
-			PutInt("castle_structure_id", r.Int("castle_structure_id")).
+			PutInt("level", r.Level).
+			PutInt("cost_coins", r.CostCoins).
+			PutInt("cost_diamonds", r.CostDiamonds).
+			PutInt("castle_structure_id", r.Castle).
 			PutUtfString("remix_url", bbsURL).
 			PutUtfString("remix_url_2", bbsURL)
 
-		g := r.JSON("graphic")
+		g := r.Graphic.V
 		island.PutGFSObject("graphic", data.MakeGFSObject().
 			PutUtfString("file", jstr(g["file"])).
 			PutUtfString("tileset", jstr(g["tileset"])).
@@ -173,21 +164,21 @@ func getIslands(db *DB) *data.GFSArray {
 		island.PutUtfString("grid", "main_grid.bin")
 
 		monsters := data.MakeGFSArray()
-		for _, m := range monstersByIsland[islandID] {
-			if skipMonsterIDs[m.Int("monster")] {
+		for _, m := range monstersByIsland[r.ID] {
+			if skipMonsterIDs[m.Monster] {
 				continue
 			}
 			monsters.AddSFSObject(data.MakeGFSObject().
-				PutInt("monster", m.Int("monster")).
-				PutUtfString("instrument", m.Str("instrument")))
+				PutInt("monster", m.Monster).
+				PutUtfString("instrument", m.Instrument))
 		}
 		island.PutGFSArray("monsters", monsters)
 
 		structures := data.MakeGFSArray()
-		for _, s := range structuresByIsland[islandID] {
+		for _, s := range structuresByIsland[r.ID] {
 			structures.AddSFSObject(data.MakeGFSObject().
-				PutInt("structure", s.Int("structure")).
-				PutUtfString("instrument", s.Str("instrument")))
+				PutInt("structure", s.Structure).
+				PutUtfString("instrument", s.Instrument))
 		}
 		island.PutGFSArray("structures", structures)
 		return island
@@ -196,26 +187,22 @@ func getIslands(db *DB) *data.GFSArray {
 
 func getStructures(db *DB) *data.GFSArray {
 	now := nowMS()
-	return buildArray(db.Table("structures"), func(r Row) *data.GFSObject {
-		structureID := r.Int("structure_id")
-		if skipStructureIDs[structureID] {
+	return buildArray(db.Structures, func(r Structure) *data.GFSObject {
+		if skipStructureIDs[r.ID] {
 			return nil
 		}
 		structure := data.MakeGFSObject().
-			PutInt("structure_id", structureID).
-			PutInt("id", structureID).
-			PutInt("entity_id", r.Int("entity")).
-			PutUtfString("structure_type", r.Str("structure_type")).
-			PutInt("upgrades_to", r.Int("upgrades_to")).
-			PutUtfString("sound", r.Str("sound")).
+			PutInt("structure_id", r.ID).
+			PutInt("id", r.ID).
+			PutInt("entity_id", r.Entity).
+			PutUtfString("structure_type", r.Type).
+			PutInt("upgrades_to", r.UpgradesTo).
+			PutUtfString("sound", r.Sound).
 			PutLong("last_changed", now).
-			PutInt("limit_to_island", r.Int("limit_to_island"))
+			PutInt("limit_to_island", r.LimitToIsland)
 
-		extra := data.MakeGFSObject()
-		putValues(extra, r.JSON("extra"))
-		structure.PutGFSObject("extra", extra)
-
-		addEntityData(db, structure, r.Int("entity"))
+		structure.PutGFSObject("extra", dynamicObject(r.Extra.V))
+		addEntityData(db, structure, r.Entity)
 		return structure
 	})
 }
@@ -225,58 +212,49 @@ func getMonsters(db *DB, levels map[[2]int]LevelInfo) *data.GFSArray {
 
 	levelsByMonster := map[int][]int{}
 	for key := range levels {
-		monsterID, lvl := key[0], key[1]
-		levelsByMonster[monsterID] = append(levelsByMonster[monsterID], lvl)
+		levelsByMonster[key[0]] = append(levelsByMonster[key[0]], key[1])
 	}
 	for _, lvls := range levelsByMonster {
 		sort.Ints(lvls)
 	}
 
-	return buildArray(db.Table("monsters"), func(r Row) *data.GFSObject {
-		monsterID := r.Int("monster_id")
-		if skipMonsterIDs[monsterID] {
+	return buildArray(db.Monsters, func(r Monster) *data.GFSObject {
+		if skipMonsterIDs[r.ID] {
 			return nil
 		}
-		genes := r.Str("genes")
-		levelupIsland := r.Str("levelup_island")
-
 		monster := data.MakeGFSObject().
-			PutInt("monster_id", monsterID).
-			PutInt("id", monsterID).
-			PutInt("entity_id", r.Int("entity")).
-			PutUtfString("genes", genes).
+			PutInt("monster_id", r.ID).
+			PutInt("id", r.ID).
+			PutInt("entity_id", r.Entity).
+			PutUtfString("genes", r.Genes).
 			PutUtfString("common_name", "Monster").
-			PutUtfString("spore_graphic", "spore_"+genes).
+			PutUtfString("spore_graphic", "spore_"+r.Genes).
 			PutBool("limited", true).
 			PutLong("last_changed", now).
-			PutInt("beds", r.Int("beds")).
+			PutInt("beds", r.Beds).
 			PutInt("hide_friends", 0)
 
 		happiness := data.MakeGFSArray()
-		for _, h := range r.JSONArray("happiness") {
-			if hm, ok := h.(map[string]any); ok {
-				happiness.AddSFSObject(data.MakeGFSObject().
-					PutInt("entity", numToInt(hm["entity"])).
-					PutInt("value", numToInt(hm["value"])))
-			}
+		for _, h := range r.Happiness.V {
+			happiness.AddSFSObject(data.MakeGFSObject().
+				PutInt("entity", h.Entity).
+				PutInt("value", h.Value))
 		}
 		monster.PutGFSArray("happiness", happiness)
 		monster.PutGFSArray("likes", happiness)
 		monster.PutGFSArray("dislikes", data.MakeGFSArray())
 
 		names := data.MakeGFSArray()
-		for _, n := range r.JSONArray("names") {
-			if s, ok := n.(string); ok {
-				names.AddUtfString(s)
-			}
+		for _, n := range r.Names.V {
+			names.AddUtfString(n)
 		}
 		monster.PutGFSArray("names", names)
-		monster.PutInt("level_up_xp", r.Int("level_up_xp"))
-		monster.PutUtfString("levelup_island", levelupIsland)
+		monster.PutInt("level_up_xp", r.LevelUpXP)
+		monster.PutUtfString("levelup_island", r.LevelupIsland)
 
-		binsID := monsterBinIDs[monsterID]
-		if strings.EqualFold(levelupIsland, "ethereal") {
-			binsID = etherealBinIDs[monsterID]
+		binsID := monsterBinIDs[r.ID]
+		if strings.EqualFold(r.LevelupIsland, "ethereal") {
+			binsID = etherealBinIDs[r.ID]
 		}
 		if binsID != "" {
 			monster.PutUtfString("bins_id", binsID)
@@ -286,11 +264,11 @@ func getMonsters(db *DB, levels map[[2]int]LevelInfo) *data.GFSArray {
 		monster.PutUtfString("link_title", bbsTitle)
 		monster.PutUtfString("link_address", bbsURL)
 
-		addEntityData(db, monster, r.Int("entity"))
+		addEntityData(db, monster, r.Entity)
 
 		levelsArr := data.MakeGFSArray()
-		for _, lvl := range levelsByMonster[monsterID] {
-			li := levels[[2]int{monsterID, lvl}]
+		for _, lvl := range levelsByMonster[r.ID] {
+			li := levels[[2]int{r.ID, lvl}]
 			levelsArr.AddSFSObject(data.MakeGFSObject().
 				PutInt("max_coins", li.MaxCoins).
 				PutInt("coins", li.Coins).

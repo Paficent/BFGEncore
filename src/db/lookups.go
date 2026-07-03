@@ -17,10 +17,7 @@
 
 package db
 
-import (
-	"encoding/json"
-	"math/rand"
-)
+import "math/rand"
 
 type BuyInfo struct {
 	Entity       int
@@ -32,25 +29,25 @@ type BuyInfo struct {
 }
 
 func buyInfoFromEntity(db *DB, entity int) (BuyInfo, bool) {
-	e, ok := db.entityByID(entity)
+	e, ok := db.entity(entity)
 	if !ok {
 		return BuyInfo{}, false
 	}
 	return BuyInfo{
 		Entity:       entity,
-		CostCoins:    e.Int("cost_coins"),
-		CostDiamonds: e.Int("cost_diamonds"),
-		CostEth:      e.Int("cost_eth_currency"),
-		BuildTime:    e.Int("build_time"),
-		Xp:           e.Int("xp"),
+		CostCoins:    e.CostCoins,
+		CostDiamonds: e.CostDiamonds,
+		CostEth:      e.CostEth,
+		BuildTime:    e.BuildTime,
+		Xp:           e.XP,
 	}, true
 }
 
 func loadMonsterBuy(db *DB) map[int]BuyInfo {
 	out := map[int]BuyInfo{}
-	for _, m := range db.Table("monsters") {
-		if info, ok := buyInfoFromEntity(db, m.Int("entity")); ok {
-			out[m.Int("monster_id")] = info
+	for _, m := range db.Monsters {
+		if info, ok := buyInfoFromEntity(db, m.Entity); ok {
+			out[m.ID] = info
 		}
 	}
 	return out
@@ -58,9 +55,9 @@ func loadMonsterBuy(db *DB) map[int]BuyInfo {
 
 func loadStructureBuy(db *DB) map[int]BuyInfo {
 	out := map[int]BuyInfo{}
-	for _, s := range db.Table("structures") {
-		if info, ok := buyInfoFromEntity(db, s.Int("entity")); ok {
-			out[s.Int("structure_id")] = info
+	for _, s := range db.Structures {
+		if info, ok := buyInfoFromEntity(db, s.Entity); ok {
+			out[s.ID] = info
 		}
 	}
 	return out
@@ -73,13 +70,13 @@ type breedCombo struct {
 
 func loadBreedingCombos(db *DB) map[[2]int][]breedCombo {
 	out := map[[2]int][]breedCombo{}
-	for _, r := range db.Table("breeding_combinations") {
-		a, b := r.Int("monster_1"), r.Int("monster_2")
+	for _, r := range db.Breeding {
+		a, b := r.Monster1, r.Monster2
 		if a > b {
 			a, b = b, a
 		}
 		key := [2]int{a, b}
-		out[key] = append(out[key], breedCombo{Result: r.Int("result"), Probability: r.Int("probability")})
+		out[key] = append(out[key], breedCombo{Result: r.Result, Probability: r.Probability})
 	}
 	for key, combos := range out {
 		for i := 1; i < len(combos); i++ {
@@ -123,16 +120,14 @@ type LevelInfo struct {
 
 func loadMonsterLevels(db *DB) map[[2]int]LevelInfo {
 	out := map[[2]int]LevelInfo{}
-	for _, mlvls := range db.Table("monster_levels") {
-		for _, lvls := range mlvls.RawArray("levels") {
-			if lvl, ok := lvls.(map[string]any); ok {
-				out[[2]int{mlvls.Int("monster"), numToInt(lvl["level"])}] = LevelInfo{
-					Food:      numToInt(lvl["food"]),
-					Coins:     numToInt(lvl["coins"]),
-					Shards:    numToInt(lvl["ethereal_currency"]),
-					MaxCoins:  numToInt(lvl["max_coins"]),
-					MaxShards: numToInt(lvl["max_ethereal"]),
-				}
+	for _, m := range db.MonsterLevels {
+		for _, r := range m.Levels {
+			out[[2]int{m.Monster, r.Level}] = LevelInfo{
+				Food:      r.Food,
+				Coins:     r.Coins,
+				Shards:    r.Eth,
+				MaxCoins:  r.MaxCoins,
+				MaxShards: r.MaxEth,
 			}
 		}
 	}
@@ -152,11 +147,11 @@ type IslandBuyInfo struct {
 
 func loadIslandBuy(db *DB) map[int]IslandBuyInfo {
 	out := map[int]IslandBuyInfo{}
-	for _, r := range db.Table("islands") {
-		out[r.Int("island_id")] = IslandBuyInfo{
-			CostCoins:    r.Int("cost_coins"),
-			CostDiamonds: r.Int("cost_diamonds"),
-			Castle:       r.Int("castle_structure_id"),
+	for _, r := range db.Islands {
+		out[r.ID] = IslandBuyInfo{
+			CostCoins:    r.CostCoins,
+			CostDiamonds: r.CostDiamonds,
+			Castle:       r.Castle,
 		}
 	}
 	return out
@@ -164,39 +159,37 @@ func loadIslandBuy(db *DB) map[int]IslandBuyInfo {
 
 func loadLevelXP(db *DB) map[int]int {
 	out := map[int]int{}
-	for _, r := range db.Table("level_xp") {
-		out[r.Int("level")] = r.Int("xp")
+	for _, r := range db.Levels {
+		out[r.Level] = r.XP
 	}
 	return out
 }
 
 func loadStructureUpgrades(db *DB) map[int]int {
 	out := map[int]int{}
-	for _, r := range db.Table("structures") {
-		if up := r.Int("upgrades_to"); up != 0 {
-			out[r.Int("structure_id")] = up
+	for _, r := range db.Structures {
+		if r.UpgradesTo != 0 {
+			out[r.ID] = r.UpgradesTo
 		}
 	}
 	return out
 }
 
 type MineInfo struct {
-	Time     int // Time in minutes for the mine to finish its job
+	Time     int
 	Diamonds int
 }
 
 func loadMineInfo(db *DB) map[int]MineInfo {
 	out := map[int]MineInfo{}
-	for _, r := range db.Table("structures") {
-		if r.Str("structure_type") != "mine" {
+	for _, r := range db.Structures {
+		if r.Type != "mine" {
 			continue
 		}
-		extra := r.Str("extra")
-		var m MineInfo
-		if err := json.Unmarshal([]byte(extra), &m); err != nil {
-			continue
+		out[r.ID] = MineInfo{
+			Time:     toInt(r.Extra.V["time"]),
+			Diamonds: toInt(r.Extra.V["diamonds"]),
 		}
-		out[r.Int("structure_id")] = m
 	}
 	return out
 }
@@ -208,8 +201,8 @@ type TeleportDest struct {
 
 func loadTeleportInfo(db *DB) map[[2]int]TeleportDest {
 	out := map[[2]int]TeleportDest{}
-	for _, e := range db.Table("monster_island_2_island_map") {
-		out[[2]int{e.Int("source_island"), e.Int("source_monster")}] = TeleportDest{e.Int("dest_island"), e.Int("dest_monster")}
+	for _, e := range db.Teleports {
+		out[[2]int{e.SrcIsland, e.SrcMonster}] = TeleportDest{e.DestIsland, e.DestMonster}
 	}
 	return out
 }

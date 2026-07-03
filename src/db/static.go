@@ -98,8 +98,8 @@ func LoadStatic(db *DB) *StaticData {
 		StructureType:   loadStructureType(db),
 		FoodOptions:     loadFoodOptions(db),
 
-		monsterLevels:  monLevels,
 		breedingCombos: loadBreedingCombos(db),
+		monsterLevels:  monLevels,
 
 		MineInfo:     loadMineInfo(db),
 		TeleportInfo: loadTeleportInfo(db),
@@ -112,8 +112,8 @@ const (
 )
 
 var (
-	skipMonsterIDs   = map[int]bool{30: true, 79: true, 80: true}                          // why are these skipped in the python server?
-	skipStructureIDs = map[int]bool{232: true, 233: true, 234: true, 235: true, 236: true} // why are these skipped in the python server?
+	skipMonsterIDs   = map[int]bool{30: true, 79: true, 80: true}
+	skipStructureIDs = map[int]bool{232: true, 233: true, 234: true, 235: true, 236: true}
 
 	monsterBinIDs = map[int]string{
 		32: "S01", 33: "CR", 34: "V", 49: "W", 52: "X", 50: "L", 55: "G",
