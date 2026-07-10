@@ -27,16 +27,15 @@ import (
 	"syscall"
 	"time"
 
+	tea "github.com/charmbracelet/bubbletea"
+
+	"paficent/bfg/commands"
 	"paficent/bfg/db"
 	"paficent/bfg/game"
 	"paficent/bfg/save"
 )
 
 func main() {
-	basicLog := log.New(os.Stdout, "", 0)
-	basicLog.Print("                           Project Encore: BFG             		    	")
-	basicLog.Print("                Copyright (C) 2026 Paficent & Contributors				\n\n\n\n\n")
-
 	configPath := flag.String("config", "./config.json", "path to config.json")
 	flag.Parse()
 
@@ -54,25 +53,23 @@ func main() {
 	logFilePath := cfg.LogPath
 	debugOn := cfg.Debug
 
-	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+	openFlags := os.O_CREATE | os.O_WRONLY | os.O_APPEND
+	if cfg.RefreshLog {
+		openFlags |= os.O_TRUNC
+	}
+	logFile, err := os.OpenFile(logFilePath, openFlags, 0o644)
 	if err != nil {
 		log.Fatalf("open log file: %v", err)
 	}
-
-	if cfg.RefreshLog {
-		logFile.Close()
-		logFile, err = os.OpenFile(logFilePath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
-		if err != nil {
-			log.Fatalf("refresh log file: %v", err)
-		}
-	}
-
 	defer logFile.Close()
-	log.SetOutput(io.MultiWriter(os.Stdout, logFile))
+
+	logs := newLogStream()
+	log.SetOutput(io.MultiWriter(logFile, logs))
+	log.Print("Project Encore: BFG — Copyright (C) 2026 Paficent & Contributors")
 
 	database, err := db.Open(dbDir)
 	if err != nil {
-		log.Fatalf("open game data: %v", err)
+		fatal(logFile, "open game data: %v", err)
 	}
 	static := db.LoadStatic(database)
 	constantsPath := cfg.ConstantsPath
@@ -81,7 +78,7 @@ func main() {
 	}
 	consts, err := db.LoadConstants(constantsPath)
 	if err != nil {
-		log.Fatalf("load constants: %v", err)
+		fatal(logFile, "load constants: %v", err)
 	}
 	static.Constants = consts
 	log.Printf("static data: %d genes, %d islands, %d monsters, %d structures, %d levels, %d store items",
@@ -90,35 +87,57 @@ func main() {
 
 	store, err := save.Open(saveFile)
 	if err != nil {
-		log.Fatalf("open player store: %v", err)
+		fatal(logFile, "open player store: %v", err)
 	}
 	defer store.Close()
 
 	mgr := game.New(static, store, debugOn)
 	mgr.StartAutosave(60 * time.Second)
+	cmds := commands.New(mgr)
 
 	auth := newAuthServer(cfg, usersFile, dlcDir)
 	go func() {
 		log.Printf("auth/content listening on %s, dlc=%s users=%s", authAddr, dlcDir, usersFile)
 		if err := http.ListenAndServe(authAddr, auth.handler()); err != nil {
-			log.Fatalf("auth server: %v", err)
+			log.Printf("auth server stopped: %v", err)
 		}
 	}()
 
 	go func() {
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
-		<-sig
-		log.Printf("shutting down, saving players...")
-		if _, err := mgr.SaveAll(); err != nil {
-			log.Printf("save on shutdown failed: %v", err)
+		log.Printf("SFS2X game server starting on %s", serverAddr)
+		if err := mgr.Run(serverAddr); err != nil {
+			log.Printf("game server stopped: %v", err)
 		}
-		store.Close()
-		os.Exit(0)
 	}()
 
 	if debugOn {
 		log.Printf("debug packet logging is ON")
 	}
-	log.Fatal(mgr.Run(serverAddr))
+
+	p := tea.NewProgram(
+		newServerTUI(logs, mgr, cmds, serverAddr, authAddr),
+		tea.WithAltScreen(),
+	)
+
+	go func() {
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+		<-sig
+		p.Quit()
+	}()
+
+	if _, err := p.Run(); err != nil {
+		fatal(logFile, "console: %v", err)
+	}
+
+	log.SetOutput(io.MultiWriter(os.Stderr, logFile))
+	log.Print("shutting down, saving players...")
+	if _, err := mgr.SaveAll(); err != nil {
+		log.Printf("save on shutdown failed: %v", err)
+	}
+}
+
+func fatal(logFile *os.File, format string, args ...any) {
+	log.SetOutput(io.MultiWriter(os.Stderr, logFile))
+	log.Fatalf(format, args...)
 }

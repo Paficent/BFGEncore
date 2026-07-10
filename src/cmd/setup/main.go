@@ -24,13 +24,15 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
+	"paficent/bfg/cmd/tui"
 )
 
 var (
-	accent = lipgloss.AdaptiveColor{Light: "205", Dark: "212"}
-	subtle = lipgloss.AdaptiveColor{Light: "240", Dark: "244"}
-	good   = lipgloss.AdaptiveColor{Light: "29", Dark: "42"}
-	bad    = lipgloss.AdaptiveColor{Light: "160", Dark: "203"}
+	accent = tui.Accent
+	subtle = tui.Subtle
+	good   = tui.Good
+	bad    = tui.Bad
 
 	titleStyle = lipgloss.NewStyle().Foreground(accent).Bold(true).MarginBottom(1)
 	boxStyle   = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(accent).Padding(1, 3)

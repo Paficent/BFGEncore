@@ -20,6 +20,8 @@ package game
 
 import (
 	"log"
+	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -262,4 +264,30 @@ func paramFloat(o *data.GFSObject, key string) float64 {
 		return float64(v)
 	}
 	return 1.0
+}
+
+type Stats struct {
+	Online        int
+	LoadedPlayers int
+}
+
+func (m *Manager) Stats() Stats {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return Stats{Online: len(m.conns), LoadedPlayers: len(m.players)}
+}
+
+func (m *Manager) OnlinePlayers() []string {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	names := make([]string, 0, len(m.conns))
+	for id := range m.conns {
+		if p := m.players[id]; p != nil && p.DisplayName != "" {
+			names = append(names, p.DisplayName)
+		} else {
+			names = append(names, strconv.FormatInt(id, 10))
+		}
+	}
+	sort.Strings(names)
+	return names
 }

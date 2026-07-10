@@ -39,15 +39,15 @@ const (
 )
 
 var (
-	dlcOptions   = []string{"Local folder or .ZIP", "Download from a URL", "Skip"}
-	patchOptions = []string{"Patch binary", "Skip"}
+	dlcOptions   = []string{"Skip", "Local folder or .ZIP", "Download from a URL"}
+	patchOptions = []string{"Skip", "Patch binary"}
 )
 
 type field struct {
-	key    string
 	name   string
 	input  textinput.Model
 	secret bool
+	apply  func(*config, string)
 }
 
 type appliedMsg struct{ notes []string }
@@ -56,65 +56,64 @@ type model struct {
 	step   step
 	out    string
 	width  int
+	height int
 	sp     spinner.Model
 	fields []field
 	focus  int
 	cfg    config
 
-	dlcCursor int
-	dlcInput  textinput.Model
-	dlcTyping bool
-	dlc       dlcSource
-
-	patchCursor int
-	patchInput  textinput.Model
-	patchTyping bool
-	patchBin    string
+	dlcChooser   chooser
+	patchChooser chooser
+	dlc          dlcSource
+	patchBin     string
 
 	notes []string
 }
 
 func newModel(out string) model {
 	d := defaults()
-	mk := func(key, name, val string, secret bool) field {
+	mk := func(name, val string, secret bool, apply func(*config, string)) field {
 		ti := textinput.New()
 		ti.Prompt = ""
 		ti.CharLimit = 256
 		ti.Width = 44
 		ti.SetValue(val)
-		return field{key: key, name: name, input: ti, secret: secret}
+		return field{name: name, input: ti, secret: secret, apply: apply}
 	}
 	fields := []field{
-		mk("key", "Encryption key", genSecret(16), true),
-		mk("iv", "Encryption IV", genSecret(16), true),
-		mk("max_players", "Max players", strconv.Itoa(d.MaxPlayers), false),
-		mk("server_ip", "Server IP", d.ServerIP, false),
-		mk("game_addr", "Game address", d.GameAddr, false),
-		mk("auth_addr", "Auth address", d.AuthAddr, false),
-		mk("db_path", "DB path", d.DBPath, false),
-		mk("save_path", "Save path", d.SavePath, false),
-		mk("dlc_path", "DLC path", d.DLCPath, false),
-		mk("users_path", "Users path", d.UsersPath, false),
-		mk("log_path", "Log path", d.LogPath, false),
-		mk("refresh_log", "Refresh log on start", boolStr(d.RefreshLog), false),
-		mk("debug", "Debug logging", boolStr(d.Debug), false),
+		mk("Encryption key", genSecret(16), true, func(c *config, v string) { c.Key = v }),
+		mk("Encryption IV", genSecret(16), true, func(c *config, v string) { c.IV = v }),
+		mk("Max players", strconv.Itoa(d.MaxPlayers), false, func(c *config, v string) { c.MaxPlayers = atoiOr(v, c.MaxPlayers) }),
+		mk("Server IP", d.ServerIP, false, func(c *config, v string) { c.ServerIP = v }),
+		mk("Game address", d.GameAddr, false, func(c *config, v string) { c.GameAddr = v }),
+		mk("Auth address", d.AuthAddr, false, func(c *config, v string) { c.AuthAddr = v }),
+		mk("DB path", d.DBPath, false, func(c *config, v string) { c.DBPath = v }),
+		mk("Save path", d.SavePath, false, func(c *config, v string) { c.SavePath = v }),
+		mk("DLC path", d.DLCPath, false, func(c *config, v string) { c.DLCPath = v }),
+		mk("Users path", d.UsersPath, false, func(c *config, v string) { c.UsersPath = v }),
+		mk("Log path", d.LogPath, false, func(c *config, v string) { c.LogPath = v }),
+		mk("Refresh log on start", boolStr(d.RefreshLog), false, func(c *config, v string) { c.RefreshLog = truthy(v) }),
+		mk("Debug logging", boolStr(d.Debug), false, func(c *config, v string) { c.Debug = truthy(v) }),
 	}
 	fields[0].input.Focus()
-
-	di := textinput.New()
-	di.Prompt = "› "
-	di.CharLimit = 512
-	di.Width = 48
-	pi := textinput.New()
-	pi.Prompt = "› "
-	pi.CharLimit = 512
-	pi.Width = 48
 
 	sp := spinner.New()
 	sp.Spinner = spinner.Dot
 	sp.Style = spinStyle
 
-	return model{step: stepWelcome, out: out, sp: sp, fields: fields, dlcInput: di, patchInput: pi}
+	return model{
+		step:   stepWelcome,
+		out:    out,
+		sp:     sp,
+		fields: fields,
+		dlcChooser: newChooser(dlcOptions, map[int]string{
+			1: "path to a .zip or a directory",
+			2: "https://example.com/dlc.zip",
+		}),
+		patchChooser: newChooser(patchOptions, map[int]string{
+			1: "path to MySingingMonsters_SDK.exe",
+		}),
+	}
 }
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
@@ -122,7 +121,7 @@ func (m model) Init() tea.Cmd { return textinput.Blink }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.width = msg.Width
+		m.resize(msg.Width, msg.Height)
 		return m, nil
 	case tea.KeyMsg:
 		if msg.String() == "ctrl+c" {
@@ -154,6 +153,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 	return m, nil
+}
+
+func (m *model) resize(w, h int) {
+	m.width, m.height = w, h
+	iw := w - 16
+	if iw < 20 {
+		iw = 20
+	}
+	if iw > 60 {
+		iw = 60
+	}
+	for i := range m.fields {
+		m.fields[i].input.Width = iw
+	}
+	m.dlcChooser.input.Width = iw
+	m.patchChooser.input.Width = iw
 }
 
 func (m model) updateWelcome(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -215,146 +230,47 @@ func (m *model) focusField(i int) {
 func (m *model) collect() {
 	c := defaults()
 	for _, f := range m.fields {
-		v := strings.TrimSpace(f.input.Value())
-		switch f.key {
-		case "key":
-			c.Key = v
-		case "iv":
-			c.IV = v
-		case "max_players":
-			c.MaxPlayers = atoiOr(v, c.MaxPlayers)
-		case "server_ip":
-			c.ServerIP = v
-		case "game_addr":
-			c.GameAddr = v
-		case "auth_addr":
-			c.AuthAddr = v
-		case "db_path":
-			c.DBPath = v
-		case "save_path":
-			c.SavePath = v
-		case "dlc_path":
-			c.DLCPath = v
-		case "users_path":
-			c.UsersPath = v
-		case "log_path":
-			c.LogPath = v
-		case "refresh_log":
-			c.RefreshLog = truthy(v)
-		case "debug":
-			c.Debug = truthy(v)
-		}
+		f.apply(&c, strings.TrimSpace(f.input.Value()))
 	}
 	m.cfg = c
 }
 
 func (m model) updateDLC(msg tea.Msg) (tea.Model, tea.Cmd) {
-	k, ok := msg.(tea.KeyMsg)
-	if m.dlcTyping {
-		if ok {
-			switch k.String() {
-			case "esc":
-				m.dlcTyping = false
-				m.dlcInput.Blur()
-				return m, nil
-			case "enter":
-				ref := strings.TrimSpace(m.dlcInput.Value())
-				if ref != "" {
-					kind := "url"
-					if m.dlcCursor == 1 {
-						kind = "local"
-					}
-					m.dlc = dlcSource{kind: kind, ref: ref}
-				}
-				m.dlcTyping = false
-				m.dlcInput.Blur()
-				m.step = stepPatch
-				return m, nil
+	res, cmd := m.dlcChooser.handle(msg)
+	switch res {
+	case chooserQuit:
+		return m, tea.Quit
+	case chooserPicked:
+		if m.dlcChooser.cursor == 0 {
+			m.dlc = dlcSource{}
+		} else if ref := m.dlcChooser.value(); ref != "" {
+			kind := "url"
+			if m.dlcChooser.cursor == 1 {
+				kind = "local"
 			}
+			m.dlc = dlcSource{kind: kind, ref: ref}
 		}
-		var cmd tea.Cmd
-		m.dlcInput, cmd = m.dlcInput.Update(msg)
-		return m, cmd
+		m.step = stepPatch
+		return m, nil
 	}
-	if ok {
-		switch k.String() {
-		case "esc":
-			return m, tea.Quit
-		case "up", "k":
-			if m.dlcCursor > 0 {
-				m.dlcCursor--
-			}
-		case "down", "j":
-			if m.dlcCursor < len(dlcOptions)-1 {
-				m.dlcCursor++
-			}
-		case "enter":
-			if m.dlcCursor == 0 {
-				m.dlc = dlcSource{}
-				m.step = stepPatch
-				return m, nil
-			}
-			m.dlcTyping = true
-			m.dlcInput.SetValue("")
-			if m.dlcCursor == 1 {
-				m.dlcInput.Placeholder = "path to a .zip or a directory"
-			} else {
-				m.dlcInput.Placeholder = "https://example.com/dlc.zip"
-			}
-			m.dlcInput.Focus()
-			return m, textinput.Blink
-		}
-	}
-	return m, nil
+	return m, cmd
 }
 
 func (m model) updatePatch(msg tea.Msg) (tea.Model, tea.Cmd) {
-	k, ok := msg.(tea.KeyMsg)
-	if m.patchTyping {
-		if ok {
-			switch k.String() {
-			case "esc":
-				m.patchTyping = false
-				m.patchInput.Blur()
-				return m, nil
-			case "enter":
-				m.patchBin = strings.TrimSpace(m.patchInput.Value())
-				m.patchTyping = false
-				m.patchInput.Blur()
-				m.step = stepReview
-				return m, nil
-			}
+	res, cmd := m.patchChooser.handle(msg)
+	switch res {
+	case chooserQuit:
+		return m, tea.Quit
+	case chooserPicked:
+		if m.patchChooser.cursor == 0 {
+			m.patchBin = ""
+		} else {
+			m.patchBin = m.patchChooser.value()
 		}
-		var cmd tea.Cmd
-		m.patchInput, cmd = m.patchInput.Update(msg)
-		return m, cmd
+		m.step = stepReview
+		return m, nil
 	}
-	if ok {
-		switch k.String() {
-		case "esc":
-			return m, tea.Quit
-		case "up", "k":
-			if m.patchCursor > 0 {
-				m.patchCursor--
-			}
-		case "down", "j":
-			if m.patchCursor < len(patchOptions)-1 {
-				m.patchCursor++
-			}
-		case "enter":
-			if m.patchCursor == 0 {
-				m.patchBin = ""
-				m.step = stepReview
-				return m, nil
-			}
-			m.patchTyping = true
-			m.patchInput.SetValue("")
-			m.patchInput.Placeholder = "path to MySingingMonsters_SDK.exe"
-			m.patchInput.Focus()
-			return m, textinput.Blink
-		}
-	}
-	return m, nil
+	return m, cmd
 }
 
 func (m model) updateReview(msg tea.Msg) (tea.Model, tea.Cmd) {

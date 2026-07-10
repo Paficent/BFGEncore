@@ -17,7 +17,11 @@
 
 package main
 
-import "strings"
+import (
+	"strings"
+
+	"paficent/bfg/cmd/tui"
+)
 
 func (m model) View() string {
 	var body string
@@ -30,12 +34,18 @@ func (m model) View() string {
 		body = m.viewDLC()
 	case stepPatch:
 		body = m.viewPatch()
+	case stepApplying:
+		body = m.viewApplying()
 	case stepReview:
 		body = m.viewReview()
 	case stepDone:
 		body = m.viewDone()
 	}
-	return titleStyle.Render("Project Encore: BFG — Setup Wizard") + "\n" + boxStyle.Render(body) + "\n"
+	card := titleStyle.Render("Project Encore: BFG — Setup Wizard") + "\n" + boxStyle.Render(body)
+	if m.width > 0 && m.height > 0 {
+		return tui.Center(m.width, m.height, card)
+	}
+	return card + "\n"
 }
 
 func (m model) viewWelcome() string {
@@ -63,27 +73,27 @@ func (m model) viewConfig() string {
 }
 
 func (m model) viewDLC() string {
-	if m.dlcTyping {
+	if m.dlcChooser.typing {
 		return strings.Join([]string{
 			"Point at your own copy:",
 			"",
-			"  " + m.dlcInput.View(),
+			"  " + m.dlcChooser.input.View(),
 			help.Render("enter=confirm | esc=back"),
 		}, "\n")
 	}
-	return menu("DLC assets", dlcOptions, m.dlcCursor, "")
+	return menu("DLC assets (optional)", m.dlcChooser.options, m.dlcChooser.cursor, "")
 }
 
 func (m model) viewPatch() string {
-	if m.patchTyping {
+	if m.patchChooser.typing {
 		return strings.Join([]string{
 			"Binary to patch:",
 			"",
-			"  " + m.patchInput.View(),
+			"  " + m.patchChooser.input.View(),
 			help.Render("enter=confirm | esc=back"),
 		}, "\n")
 	}
-	return menu("Client patch", patchOptions, m.patchCursor, "")
+	return menu("Client patch (optional)", m.patchChooser.options, m.patchChooser.cursor, "")
 }
 
 func (m model) viewReview() string {

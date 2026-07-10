@@ -9,4 +9,4 @@ setup.exe
 server.exe
 *.zip
 builds/
-src/constants.json
+src/*.json
