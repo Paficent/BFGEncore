@@ -39,8 +39,8 @@ const (
 )
 
 var (
-	dlcOptions   = []string{"Skip", "Local folder or .ZIP", "Download from a URL"}
-	patchOptions = []string{"Skip", "Patch binary"}
+	dlcOptions   = []string{"Local folder or .ZIP", "Download from a URL", "Skip"}
+	patchOptions = []string{"Patch binary", "Skip"}
 )
 
 type field struct {
@@ -395,10 +395,13 @@ func applyCmd(out string, cfg config, dlc dlcSource, patchBin string) tea.Cmd {
 
 		if patchBin == "" {
 			notes = append(notes, "patch: skipped")
-		} else if err := patchClient(patchBin, cfg.ServerIP); err != nil {
-			notes = append(notes, "patch: "+err.Error())
 		} else {
-			notes = append(notes, "patch: done")
+			url := clientAuthURL(cfg)
+			if err := patchClient(patchBin, url); err != nil {
+				notes = append(notes, "patch: "+err.Error())
+			} else {
+				notes = append(notes, "patch: pointed client at "+url)
+			}
 		}
 		return appliedMsg{notes: notes}
 	}

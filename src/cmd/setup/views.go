@@ -71,7 +71,7 @@ func (m model) viewDLC() string {
 			help.Render("enter=confirm | esc=back"),
 		}, "\n")
 	}
-	return menu("DLC assets (optional)", dlcOptions, m.dlcCursor, "")
+	return menu("DLC assets", dlcOptions, m.dlcCursor, "")
 }
 
 func (m model) viewPatch() string {
@@ -83,7 +83,7 @@ func (m model) viewPatch() string {
 			help.Render("enter=confirm | esc=back"),
 		}, "\n")
 	}
-	return menu("Client patch (optional)", patchOptions, m.patchCursor, "")
+	return menu("Client patch", patchOptions, m.patchCursor, "")
 }
 
 func (m model) viewReview() string {

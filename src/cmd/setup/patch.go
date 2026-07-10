@@ -18,11 +18,30 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"net"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
-func patchClient(bin, host string) error {
+const officialAuthURL = "https://bf-auth.bbbgame.net/"
+
+func clientAuthURL(cfg config) string {
+	port := "900"
+	if _, p, err := net.SplitHostPort(cfg.AuthAddr); err == nil && p != "" {
+		port = p
+	}
+	return "http://" + net.JoinHostPort(cfg.ServerIP, port) + "/"
+}
+
+func backupPath(bin string) string {
+	ext := filepath.Ext(bin)
+	return strings.TrimSuffix(bin, ext) + "_BACKUP" + ext
+}
+
+func patchClient(bin, clientURL string) error {
 	if bin == "" {
 		return nil
 	}
@@ -31,7 +50,40 @@ func patchClient(bin, host string) error {
 		return err
 	}
 	if info.IsDir() {
-		return fmt.Errorf("%s is a directory, expected a binary", bin)
+		return fmt.Errorf("%s is a directory, expected the game executable", bin)
 	}
-	return fmt.Errorf("patcher not wired up yet (%s -> %s)", bin, host)
+
+	find := []byte(officialAuthURL)
+	if len(clientURL) > len(find) {
+		return fmt.Errorf("server URL %q is %d bytes, but only %d fit in place; use a shorter address (an IP with a short port)", clientURL, len(clientURL), len(find))
+	}
+	repl := make([]byte, len(find))
+	copy(repl, clientURL) // string terminator + padding
+
+	backup := backupPath(bin)
+	data, err := os.ReadFile(bin)
+	if err != nil {
+		return err
+	}
+
+	switch {
+	case bytes.Contains(data, find):
+	case bytes.Contains(data, repl):
+		return nil
+	default:
+		restored, rerr := os.ReadFile(backup)
+		if rerr != nil || !bytes.Contains(restored, find) {
+			return fmt.Errorf("couldn't find %s in %s — is this the Big Fish MSM v1.2.9 executable? if it was patched before, restore %s and try again", officialAuthURL, bin, filepath.Base(backup))
+		}
+		data = restored
+	}
+
+	if _, statErr := os.Stat(backup); os.IsNotExist(statErr) {
+		if err := os.WriteFile(backup, data, info.Mode()); err != nil {
+			return fmt.Errorf("write backup %s: %w", backup, err)
+		}
+	}
+
+	patched := bytes.ReplaceAll(data, find, repl)
+	return os.WriteFile(bin, patched, info.Mode())
 }
