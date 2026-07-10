@@ -14,11 +14,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "coins01",
-    "ios_platform_id": "com.bbb.mysingingmonsters.coins.99",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:29",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 2,
@@ -35,11 +31,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "coins02",
-    "ios_platform_id": "com.bbb.mysingingmonsters.coins.199",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:33",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 3,
@@ -56,11 +48,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "coins03",
-    "ios_platform_id": "com.bbb.mysingingmonsters.coins.499",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:39",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 4,
@@ -77,11 +65,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "coins04",
-    "ios_platform_id": "com.bbb.mysingingmonsters.coins.999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:43",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 5,
@@ -98,11 +82,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "coins05",
-    "ios_platform_id": "com.bbb.mysingingmonsters.coins.2499",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:44",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 6,
@@ -119,11 +99,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "coins06",
-    "ios_platform_id": "com.bbb.mysingingmonsters.coins.4999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:51",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 7,
@@ -140,11 +116,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "diamonds01",
-    "ios_platform_id": "com.bbb.mysingingmonsters.diamond.199",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:09:51",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 8,
@@ -161,11 +133,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "diamonds02",
-    "ios_platform_id": "com.bbb.mysingingmonsters.diamond.499",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:09:56",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 9,
@@ -182,11 +150,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "diamonds03",
-    "ios_platform_id": "com.bbb.mysingingmonsters.diamond.999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:04",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 10,
@@ -203,11 +167,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "diamonds04",
-    "ios_platform_id": "com.bbb.mysingingmonsters.diamond.2499",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:07",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 11,
@@ -224,11 +184,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "diamonds05",
-    "ios_platform_id": "com.bbb.mysingingmonsters.diamond.4999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:16",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 12,
@@ -245,11 +201,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "diamonds06",
-    "ios_platform_id": "com.bbb.mysingingmonsters.diamond.9999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:10:19",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 13,
@@ -266,11 +218,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "food01",
-    "ios_platform_id": "com.bbb.mysingingmonsters.food.99",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:11:04",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 14,
@@ -287,11 +235,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "food02",
-    "ios_platform_id": "com.bbb.mysingingmonsters.food.199",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:11:04",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 15,
@@ -308,11 +252,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "food03",
-    "ios_platform_id": "com.bbb.mysingingmonsters.food.499",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:11:08",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 16,
@@ -329,11 +269,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "food04",
-    "ios_platform_id": "com.bbb.mysingingmonsters.food.999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:11:15",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 17,
@@ -350,11 +286,7 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "food05",
-    "ios_platform_id": "com.bbb.mysingingmonsters.food.2499",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 19:11:18",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "storeitem_id": 18,
@@ -371,10 +303,6 @@
     "currency_id": 1,
     "sheet_id": "currency.bin",
     "image_id": "food06",
-    "ios_platform_id": "com.bbb.mysingingmonsters.food.4999",
-    "android_platform_id": "",
-    "last_changed": "2014-05-28 17:29:43",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   }
 ]

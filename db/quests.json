@@ -11,7 +11,6 @@
     "image": "goal_icon_food",
     "initial": 1,
     "visible": 1,
-    "comment": "",
-    "min_server_version": "1.0"
+    "comment": ""
   }
 ]

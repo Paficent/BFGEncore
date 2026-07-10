@@ -5,7 +5,6 @@
     "description": "ISLAND_1_DESC",
     "graphic": "{ \"file\" : \"island01.bin\", \"tileset\":\"tileset_island01.bin\", \"bg\": \"sky01\" }",
     "genes": "BCDE",
-    "last_changed": "2014-04-11 15:02:20",
     "level": 1,
     "cost_coins": 0,
     "cost_diamonds": 0,
@@ -13,8 +12,7 @@
     "castle_structure_id": 7,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "island_id": 2,
@@ -22,7 +20,6 @@
     "description": "ISLAND_2_DESC",
     "graphic": "{ \"file\" : \"island02.bin\", \"tileset\":\"tileset_island02.bin\", \"bg\": \"sky02\"  }",
     "genes": "ABDE",
-    "last_changed": "2014-02-13 16:58:48",
     "level": 1,
     "cost_coins": 200000,
     "cost_diamonds": 0,
@@ -30,8 +27,7 @@
     "castle_structure_id": 12,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "island_id": 3,
@@ -39,7 +35,6 @@
     "description": "ISLAND_3_DESC",
     "graphic": "{ \"file\" : \"island03.bin\", \"tileset\":\"tileset_island03.bin\", \"bg\": \"sky03\"  }",
     "genes": "ACDE",
-    "last_changed": "2014-04-11 13:55:26",
     "level": 1,
     "cost_coins": 750000,
     "cost_diamonds": 0,
@@ -47,8 +42,7 @@
     "castle_structure_id": 17,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "island_id": 4,
@@ -56,7 +50,6 @@
     "description": "ISLAND_4_DESC",
     "graphic": "{ \"file\" : \"island04.bin\", \"tileset\":\"tileset_island04.bin\", \"bg\": \"sky04\"  }",
     "genes": "ABCD",
-    "last_changed": "2014-02-13 16:58:48",
     "level": 1,
     "cost_coins": 1500000,
     "cost_diamonds": 0,
@@ -64,8 +57,7 @@
     "castle_structure_id": 22,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "island_id": 5,
@@ -73,7 +65,6 @@
     "description": "ISLAND_5_DESC",
     "graphic": "{ \"file\" : \"island05.bin\", \"tileset\":\"tileset_island05.bin\", \"bg\": \"sky05\"  }",
     "genes": "ABCE",
-    "last_changed": "2014-02-13 16:58:48",
     "level": 1,
     "cost_coins": 7500000,
     "cost_diamonds": 0,
@@ -81,8 +72,7 @@
     "castle_structure_id": 27,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "island_id": 6,
@@ -90,7 +80,6 @@
     "description": "ISLAND_GOLD_DESC",
     "graphic": "{ \"file\" : \"island06.bin\", \"tileset\":\"tileset_island06.bin\", \"bg\": \"sky06\" }",
     "genes": "ABCDE",
-    "last_changed": "2014-02-13 16:58:48",
     "level": 1,
     "cost_coins": 0,
     "cost_diamonds": 0,
@@ -98,8 +87,7 @@
     "castle_structure_id": 137,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "0.0"
+    "enabled": 1
   },
   {
     "island_id": 7,
@@ -107,7 +95,6 @@
     "description": "ISLAND_ETHEREAL_DESC",
     "graphic": "{ \"file\" : \"island07.bin\", \"tileset\":\"tileset_island07.bin\", \"bg\": \"sky07\" }",
     "genes": "BCDE",
-    "last_changed": "2014-02-13 16:58:48",
     "level": 1,
     "cost_coins": 0,
     "cost_diamonds": 0,
@@ -115,8 +102,7 @@
     "castle_structure_id": 200,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "3.0"
+    "enabled": 1
   },
   {
     "island_id": 8,
@@ -124,7 +110,6 @@
     "description": "ISLAND_SHUGA_DESC",
     "graphic": "{ \"file\" : \"island08.bin\", \"tileset\":\"tileset_island08.bin\", \"bg\": \"sky08\" }",
     "genes": "BCDE",
-    "last_changed": "2014-02-13 16:58:48",
     "level": 1,
     "cost_coins": 0,
     "cost_diamonds": 0,
@@ -132,7 +117,6 @@
     "castle_structure_id": 214,
     "remix_url": "",
     "remix_url_2": "",
-    "enabled": 1,
-    "min_server_version": "3.2"
+    "enabled": 1
   }
 ]

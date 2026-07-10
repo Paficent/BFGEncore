@@ -2,29 +2,21 @@
   {
     "storecur_id": 1,
     "currency_name": "real",
-    "starting_amount": 0,
-    "last_changed": "2013-05-27 08:29:09",
-    "min_server_version": "0.0"
+    "starting_amount": 0
   },
   {
     "storecur_id": 2,
     "currency_name": "coins",
-    "starting_amount": 0,
-    "last_changed": "2013-05-27 08:29:09",
-    "min_server_version": "0.0"
+    "starting_amount": 0
   },
   {
     "storecur_id": 3,
     "currency_name": "diamond",
-    "starting_amount": 0,
-    "last_changed": "2013-05-27 08:29:09",
-    "min_server_version": "0.0"
+    "starting_amount": 0
   },
   {
     "storecur_id": 4,
     "currency_name": "food",
-    "starting_amount": 0,
-    "last_changed": "2013-05-27 08:29:09",
-    "min_server_version": "0.0"
+    "starting_amount": 0
   }
 ]
