@@ -1,42 +1,34 @@
 [
   {
     "island_id": 1,
-    "torch_graphic": "tiki_plant01",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": "tiki_plant01"
   },
   {
     "island_id": 2,
-    "torch_graphic": "tiki_cold01",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": "tiki_cold01"
   },
   {
     "island_id": 3,
-    "torch_graphic": "tiki_air01",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": "tiki_air01"
   },
   {
     "island_id": 4,
-    "torch_graphic": "tiki_water01",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": "tiki_water01"
   },
   {
     "island_id": 5,
-    "torch_graphic": "tiki_earth01",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": "tiki_earth01"
   },
   {
     "island_id": 6,
-    "torch_graphic": "",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": ""
   },
   {
     "island_id": 7,
-    "torch_graphic": "tiki_ethereal01",
-    "last_changed": "2013-10-09 13:18:36"
+    "torch_graphic": "tiki_ethereal01"
   },
   {
     "island_id": 8,
-    "torch_graphic": "tiki_legendary01",
-    "last_changed": "2013-11-22 10:43:06"
+    "torch_graphic": "tiki_legendary01"
   }
 ]

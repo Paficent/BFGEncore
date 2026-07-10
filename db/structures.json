@@ -5,7 +5,6 @@
     "entity": 1,
     "upgrades_to": 0,
     "extra": "{\"beds\": 1}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -15,7 +14,6 @@
     "entity": 2,
     "upgrades_to": 0,
     "extra": "{\"beds\": 1}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -25,7 +23,6 @@
     "entity": 6,
     "upgrades_to": 0,
     "extra": "{\"time\": 720, \"diamonds\": 2}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -35,7 +32,6 @@
     "entity": 7,
     "upgrades_to": 8,
     "extra": "{\"beds\": 4}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -45,7 +41,6 @@
     "entity": 8,
     "upgrades_to": 9,
     "extra": "{\"beds\": 10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -55,7 +50,6 @@
     "entity": 9,
     "upgrades_to": 10,
     "extra": "{\"beds\": 18}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -65,7 +59,6 @@
     "entity": 10,
     "upgrades_to": 11,
     "extra": "{\"beds\": 28}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -75,7 +68,6 @@
     "entity": 11,
     "upgrades_to": 138,
     "extra": "{\"beds\": 40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -85,7 +77,6 @@
     "entity": 12,
     "upgrades_to": 13,
     "extra": "{\"beds\": 4}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -95,7 +86,6 @@
     "entity": 13,
     "upgrades_to": 14,
     "extra": "{\"beds\": 10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -105,7 +95,6 @@
     "entity": 14,
     "upgrades_to": 15,
     "extra": "{\"beds\": 18}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -115,7 +104,6 @@
     "entity": 15,
     "upgrades_to": 16,
     "extra": "{\"beds\": 28}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -125,7 +113,6 @@
     "entity": 16,
     "upgrades_to": 139,
     "extra": "{\"beds\": 40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -135,7 +122,6 @@
     "entity": 17,
     "upgrades_to": 18,
     "extra": "{\"beds\": 4}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -145,7 +131,6 @@
     "entity": 18,
     "upgrades_to": 19,
     "extra": "{\"beds\": 10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -155,7 +140,6 @@
     "entity": 19,
     "upgrades_to": 20,
     "extra": "{\"beds\": 18}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -165,7 +149,6 @@
     "entity": 20,
     "upgrades_to": 21,
     "extra": "{\"beds\": 28}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -175,7 +158,6 @@
     "entity": 21,
     "upgrades_to": 140,
     "extra": "{\"beds\": 40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -185,7 +167,6 @@
     "entity": 22,
     "upgrades_to": 23,
     "extra": "{\"beds\": 4}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -195,7 +176,6 @@
     "entity": 23,
     "upgrades_to": 24,
     "extra": "{\"beds\": 10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -205,7 +185,6 @@
     "entity": 24,
     "upgrades_to": 25,
     "extra": "{\"beds\": 18}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -215,7 +194,6 @@
     "entity": 25,
     "upgrades_to": 26,
     "extra": "{\"beds\": 28}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -225,7 +203,6 @@
     "entity": 26,
     "upgrades_to": 141,
     "extra": "{\"beds\": 40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -235,7 +212,6 @@
     "entity": 27,
     "upgrades_to": 28,
     "extra": "{\"beds\": 4}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -245,7 +221,6 @@
     "entity": 28,
     "upgrades_to": 29,
     "extra": "{\"beds\": 10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -255,7 +230,6 @@
     "entity": 29,
     "upgrades_to": 30,
     "extra": "{\"beds\": 18}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -265,7 +239,6 @@
     "entity": 30,
     "upgrades_to": 31,
     "extra": "{\"beds\": 28}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -275,7 +248,6 @@
     "entity": 31,
     "upgrades_to": 142,
     "extra": "{\"beds\": 40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -285,7 +257,6 @@
     "entity": 32,
     "upgrades_to": 33,
     "extra": "{\"food_options\":[{\"food\": 5, \"cost\": 50, \"time\": 30, \"xp\": 25, \"label\": \"BAKING_CUPCAKES\"},{\"food\": 25, \"cost\": 250, \"time\": 300, \"xp\": 125, \"label\": \"BAKING_COOKIES\"},{\"food\": 100, \"cost\": 1000,\"time\": 1800, \"xp\": 500, \"label\": \"BAKING_BREAD\"}], \"food_x\":0, \"food_y\":-30,  \"food_flip_x\":0, \"food_flip_y\":-30}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -295,7 +266,6 @@
     "entity": 33,
     "upgrades_to": 34,
     "extra": "{\"food_options\":[{\"food\": 5, \"cost\": 50, \"time\": 30, \"xp\": 25, \"label\": \"BAKING_CUPCAKES\"},{\"food\": 25, \"cost\": 250, \"time\": 300, \"xp\": 125, \"label\": \"BAKING_COOKIES\"},{\"food\": 100, \"cost\": 1000,\"time\": 1800, \"xp\": 500, \"label\": \"BAKING_BREAD\"},{\"food\": 500, \"cost\": 5000, \"time\": 3600, \"xp\": 2500, \"label\": \"BAKING_DONUTS\"},{\"food\": 1500, \"cost\": 15000, \"time\": 10800, \"xp\": 7500, \"label\": \"BAKING_ICE_CREAM\"},{\"food\": 7500, \"cost\": 75000, \"time\" : 21600, \"xp\": 37500, \"label\": \"BAKING_PIZZA\"}], \"food_x\":3, \"food_y\":-30,  \"food_flip_x\":-3, \"food_flip_y\":-30}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -305,7 +275,6 @@
     "entity": 34,
     "upgrades_to": 0,
     "extra": "{\"food_options\":[{\"food\": 5, \"cost\": 50, \"time\": 30, \"xp\": 25, \"label\": \"BAKING_CUPCAKES\"},{\"food\": 25, \"cost\": 250, \"time\": 300, \"xp\": 125, \"label\": \"BAKING_COOKIES\"},{\"food\": 100, \"cost\": 1000,\"time\": 1800, \"xp\": 500, \"label\": \"BAKING_BREAD\"},{\"food\": 500, \"cost\": 5000, \"time\": 3600, \"xp\": 2500, \"label\": \"BAKING_DONUTS\"},{\"food\": 1500, \"cost\": 15000, \"time\": 10800, \"xp\": 7500, \"label\": \"BAKING_ICE_CREAM\"},{\"food\": 7500, \"cost\": 75000, \"time\" : 21600, \"xp\": 37500, \"label\": \"BAKING_PIZZA\"},{\"food\": 50000, \"cost\": 500000, \"time\" : 43200, \"xp\": 250000, \"label\": \"BAKING_PIE\"},{\"food\": 100000, \"cost\": 1000000, \"time\" : 86400, \"xp\": 500000, \"label\": \"BAKING_TURKEY\"},{\"food\": 500000, \"cost\": 5000000, \"time\" : 172800, \"xp\": 2500000, \"label\": \"BAKING_CAKE\"}], \"food_x\":5, \"food_y\":-40,  \"food_flip_x\":-5, \"food_flip_y\":-40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -315,7 +284,6 @@
     "entity": 95,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -325,7 +293,6 @@
     "entity": 96,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -335,7 +302,6 @@
     "entity": 97,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -345,7 +311,6 @@
     "entity": 98,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -355,7 +320,6 @@
     "entity": 100,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "fence01.wav",
     "limit_to_island": 0
   },
@@ -365,7 +329,6 @@
     "entity": 101,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -375,7 +338,6 @@
     "entity": 102,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -385,7 +347,6 @@
     "entity": 103,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -395,7 +356,6 @@
     "entity": 104,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -405,7 +365,6 @@
     "entity": 105,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -415,7 +374,6 @@
     "entity": 106,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -425,7 +383,6 @@
     "entity": 107,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "lamppost01.wav",
     "limit_to_island": 0
   },
@@ -435,7 +392,6 @@
     "entity": 108,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "lamppost02.wav",
     "limit_to_island": 0
   },
@@ -445,7 +401,6 @@
     "entity": 109,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -455,7 +410,6 @@
     "entity": 110,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -465,7 +419,6 @@
     "entity": 111,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -475,7 +428,6 @@
     "entity": 112,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "musictree01.wav",
     "limit_to_island": 0
   },
@@ -485,7 +437,6 @@
     "entity": 113,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "musictree02.wav",
     "limit_to_island": 0
   },
@@ -495,7 +446,6 @@
     "entity": 114,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -505,7 +455,6 @@
     "entity": 115,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -515,7 +464,6 @@
     "entity": 116,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -525,7 +473,6 @@
     "entity": 117,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -535,7 +482,6 @@
     "entity": 118,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -545,7 +491,6 @@
     "entity": 119,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -555,7 +500,6 @@
     "entity": 120,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -565,7 +509,6 @@
     "entity": 121,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -575,7 +518,6 @@
     "entity": 122,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -585,7 +527,6 @@
     "entity": 123,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -595,7 +536,6 @@
     "entity": 125,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -605,7 +545,6 @@
     "entity": 126,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -615,7 +554,6 @@
     "entity": 127,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -625,7 +563,6 @@
     "entity": 128,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -635,7 +572,6 @@
     "entity": 129,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -645,7 +581,6 @@
     "entity": 130,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -655,7 +590,6 @@
     "entity": 131,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -665,7 +599,6 @@
     "entity": 132,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -675,7 +608,6 @@
     "entity": 133,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -685,7 +617,6 @@
     "entity": 134,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -695,7 +626,6 @@
     "entity": 135,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -705,7 +635,6 @@
     "entity": 136,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -715,7 +644,6 @@
     "entity": 137,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -725,7 +653,6 @@
     "entity": 138,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -735,7 +662,6 @@
     "entity": 139,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -745,7 +671,6 @@
     "entity": 140,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -755,7 +680,6 @@
     "entity": 141,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -765,7 +689,6 @@
     "entity": 142,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -775,7 +698,6 @@
     "entity": 143,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -785,7 +707,6 @@
     "entity": 169,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -795,7 +716,6 @@
     "entity": 170,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -805,7 +725,6 @@
     "entity": 171,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -815,7 +734,6 @@
     "entity": 172,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -825,7 +743,6 @@
     "entity": 173,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -835,7 +752,6 @@
     "entity": 174,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -845,7 +761,6 @@
     "entity": 175,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -855,7 +770,6 @@
     "entity": 176,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -865,7 +779,6 @@
     "entity": 177,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -875,7 +788,6 @@
     "entity": 178,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -885,7 +797,6 @@
     "entity": 179,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -895,7 +806,6 @@
     "entity": 180,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -905,7 +815,6 @@
     "entity": 181,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -915,7 +824,6 @@
     "entity": 182,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -925,7 +833,6 @@
     "entity": 183,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -935,7 +842,6 @@
     "entity": 184,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -945,7 +851,6 @@
     "entity": 185,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -955,7 +860,6 @@
     "entity": 186,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -965,7 +869,6 @@
     "entity": 187,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -975,7 +878,6 @@
     "entity": 189,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -985,7 +887,6 @@
     "entity": 190,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -995,7 +896,6 @@
     "entity": 191,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1005,7 +905,6 @@
     "entity": 192,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1015,7 +914,6 @@
     "entity": 193,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1025,7 +923,6 @@
     "entity": 194,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1035,7 +932,6 @@
     "entity": 195,
     "upgrades_to": 0,
     "extra": "{\"beds\": 500}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 6
   },
@@ -1045,7 +941,6 @@
     "entity": 196,
     "upgrades_to": 237,
     "extra": "{\"beds\": 60}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1055,7 +950,6 @@
     "entity": 197,
     "upgrades_to": 238,
     "extra": "{\"beds\": 60}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1065,7 +959,6 @@
     "entity": 198,
     "upgrades_to": 239,
     "extra": "{\"beds\": 60}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1075,7 +968,6 @@
     "entity": 199,
     "upgrades_to": 240,
     "extra": "{\"beds\": 60}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1085,7 +977,6 @@
     "entity": 200,
     "upgrades_to": 241,
     "extra": "{\"beds\": 60}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1095,7 +986,6 @@
     "entity": 202,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1105,7 +995,6 @@
     "entity": 203,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1115,7 +1004,6 @@
     "entity": 204,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1125,7 +1013,6 @@
     "entity": 205,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1135,7 +1022,6 @@
     "entity": 206,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1145,7 +1031,6 @@
     "entity": 207,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1155,7 +1040,6 @@
     "entity": 208,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1165,7 +1049,6 @@
     "entity": 209,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1175,7 +1058,6 @@
     "entity": 210,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1185,7 +1067,6 @@
     "entity": 211,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1195,7 +1076,6 @@
     "entity": 212,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1205,7 +1085,6 @@
     "entity": 213,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1215,7 +1094,6 @@
     "entity": 214,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1225,7 +1103,6 @@
     "entity": 215,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1235,7 +1112,6 @@
     "entity": 216,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1245,7 +1121,6 @@
     "entity": 217,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 2
   },
@@ -1255,7 +1130,6 @@
     "entity": 218,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1265,7 +1139,6 @@
     "entity": 219,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1275,7 +1148,6 @@
     "entity": 220,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1285,7 +1157,6 @@
     "entity": 221,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1295,7 +1166,6 @@
     "entity": 222,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1305,7 +1175,6 @@
     "entity": 223,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1315,7 +1184,6 @@
     "entity": 224,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 3
   },
@@ -1325,7 +1193,6 @@
     "entity": 225,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1335,7 +1202,6 @@
     "entity": 226,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1345,7 +1211,6 @@
     "entity": 227,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1355,7 +1220,6 @@
     "entity": 228,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1365,7 +1229,6 @@
     "entity": 229,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1375,7 +1238,6 @@
     "entity": 230,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1385,7 +1247,6 @@
     "entity": 231,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 4
   },
@@ -1395,7 +1256,6 @@
     "entity": 232,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1405,7 +1265,6 @@
     "entity": 233,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1415,7 +1274,6 @@
     "entity": 234,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1425,7 +1283,6 @@
     "entity": 235,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1435,7 +1292,6 @@
     "entity": 236,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1445,7 +1301,6 @@
     "entity": 237,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1455,7 +1310,6 @@
     "entity": 238,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1465,7 +1319,6 @@
     "entity": 239,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 5
   },
@@ -1475,7 +1328,6 @@
     "entity": 240,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1485,7 +1337,6 @@
     "entity": 241,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1495,7 +1346,6 @@
     "entity": 242,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1505,7 +1355,6 @@
     "entity": 244,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1515,7 +1364,6 @@
     "entity": 249,
     "upgrades_to": 0,
     "extra": "{\"time\": 1440, \"diamonds\": 1}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1525,7 +1373,6 @@
     "entity": 275,
     "upgrades_to": 189,
     "extra": "{\"capacity\":10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1535,7 +1382,6 @@
     "entity": 276,
     "upgrades_to": 190,
     "extra": "{\"capacity\":25}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1545,7 +1391,6 @@
     "entity": 277,
     "upgrades_to": 0,
     "extra": "{\"capacity\":50}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1555,7 +1400,6 @@
     "entity": 278,
     "upgrades_to": 192,
     "extra": "{\"capacity\":10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1565,7 +1409,6 @@
     "entity": 279,
     "upgrades_to": 193,
     "extra": "{\"capacity\":20}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1575,7 +1418,6 @@
     "entity": 280,
     "upgrades_to": 0,
     "extra": "{\"capacity\":30}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1585,7 +1427,6 @@
     "entity": 282,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1595,7 +1436,6 @@
     "entity": 283,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1605,7 +1445,6 @@
     "entity": 284,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1615,7 +1454,6 @@
     "entity": 285,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1625,7 +1463,6 @@
     "entity": 286,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1635,7 +1472,6 @@
     "entity": 287,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1645,7 +1481,6 @@
     "entity": 292,
     "upgrades_to": 201,
     "extra": "{\"beds\": 20}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1655,7 +1490,6 @@
     "entity": 293,
     "upgrades_to": 202,
     "extra": "{\"beds\": 45}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1665,7 +1499,6 @@
     "entity": 294,
     "upgrades_to": 203,
     "extra": "{\"beds\": 80}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1675,7 +1508,6 @@
     "entity": 295,
     "upgrades_to": 204,
     "extra": "{\"beds\": 125}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1685,7 +1517,6 @@
     "entity": 296,
     "upgrades_to": 205,
     "extra": "{\"beds\": 175}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1695,7 +1526,6 @@
     "entity": 297,
     "upgrades_to": 242,
     "extra": "{\"beds\": 265}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1705,7 +1535,6 @@
     "entity": 300,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1715,7 +1544,6 @@
     "entity": 301,
     "upgrades_to": 0,
     "extra": "{\"time\": 720, \"diamonds\": 2}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 1
   },
@@ -1725,7 +1553,6 @@
     "entity": 317,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1735,7 +1562,6 @@
     "entity": 318,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1745,7 +1571,6 @@
     "entity": 319,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1755,7 +1580,6 @@
     "entity": 320,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1765,7 +1589,6 @@
     "entity": 321,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1775,7 +1598,6 @@
     "entity": 322,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1785,7 +1607,6 @@
     "entity": 323,
     "upgrades_to": 215,
     "extra": "{\"beds\": 4}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1795,7 +1616,6 @@
     "entity": 324,
     "upgrades_to": 216,
     "extra": "{\"beds\": 10}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1805,7 +1625,6 @@
     "entity": 325,
     "upgrades_to": 217,
     "extra": "{\"beds\": 18}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1815,7 +1634,6 @@
     "entity": 326,
     "upgrades_to": 218,
     "extra": "{\"beds\": 28}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1825,7 +1643,6 @@
     "entity": 327,
     "upgrades_to": 219,
     "extra": "{\"beds\": 40}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1835,7 +1652,6 @@
     "entity": 328,
     "upgrades_to": 243,
     "extra": "{\"beds\": 60}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1845,7 +1661,6 @@
     "entity": 330,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1855,7 +1670,6 @@
     "entity": 331,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1865,7 +1679,6 @@
     "entity": 332,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1875,7 +1688,6 @@
     "entity": 333,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1885,7 +1697,6 @@
     "entity": 334,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1895,7 +1706,6 @@
     "entity": 335,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 7
   },
@@ -1905,7 +1715,6 @@
     "entity": 336,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1915,7 +1724,6 @@
     "entity": 337,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1925,7 +1733,6 @@
     "entity": 338,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1935,7 +1742,6 @@
     "entity": 339,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1945,7 +1751,6 @@
     "entity": 340,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1955,7 +1760,6 @@
     "entity": 341,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-02-13 16:58:48",
     "sound": "",
     "limit_to_island": 8
   },
@@ -1965,7 +1769,6 @@
     "entity": 347,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-04-28 15:30:43",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1975,7 +1778,6 @@
     "entity": 348,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-04-28 15:30:43",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1985,7 +1787,6 @@
     "entity": 349,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-04-28 15:30:43",
     "sound": "",
     "limit_to_island": 0
   },
@@ -1995,7 +1796,6 @@
     "entity": 350,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 0
   },
@@ -2005,7 +1805,6 @@
     "entity": 351,
     "upgrades_to": 0,
     "extra": "{}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 0
   },
@@ -2015,7 +1814,6 @@
     "entity": 354,
     "upgrades_to": 0,
     "extra": "{\"beds\": 90}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 1
   },
@@ -2025,7 +1823,6 @@
     "entity": 355,
     "upgrades_to": 0,
     "extra": "{\"beds\": 90}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 2
   },
@@ -2035,7 +1832,6 @@
     "entity": 356,
     "upgrades_to": 0,
     "extra": "{\"beds\": 90}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 3
   },
@@ -2045,7 +1841,6 @@
     "entity": 357,
     "upgrades_to": 0,
     "extra": "{\"beds\": 90}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 4
   },
@@ -2055,7 +1850,6 @@
     "entity": 358,
     "upgrades_to": 0,
     "extra": "{\"beds\": 90}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 5
   },
@@ -2065,7 +1859,6 @@
     "entity": 359,
     "upgrades_to": 0,
     "extra": "{\"beds\": 400}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 7
   },
@@ -2075,7 +1868,6 @@
     "entity": 360,
     "upgrades_to": 0,
     "extra": "{\"beds\": 90}",
-    "last_changed": "2014-04-29 11:09:26",
     "sound": "",
     "limit_to_island": 8
   }

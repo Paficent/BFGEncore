@@ -5,8 +5,7 @@
     "prize": "coins",
     "amount": 100000,
     "probability": 1,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 2,
@@ -14,8 +13,7 @@
     "prize": "coins",
     "amount": 10000,
     "probability": 12,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 3,
@@ -23,8 +21,7 @@
     "prize": "coins",
     "amount": 1000,
     "probability": 500,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 4,
@@ -32,8 +29,7 @@
     "prize": "coins",
     "amount": 100,
     "probability": 4000,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 5,
@@ -41,8 +37,7 @@
     "prize": "food",
     "amount": 100000,
     "probability": 1,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 6,
@@ -50,8 +45,7 @@
     "prize": "food",
     "amount": 10000,
     "probability": 12,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 7,
@@ -59,8 +53,7 @@
     "prize": "food",
     "amount": 1000,
     "probability": 500,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 8,
@@ -68,8 +61,7 @@
     "prize": "food",
     "amount": 100,
     "probability": 4000,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 9,
@@ -77,8 +69,7 @@
     "prize": "diamonds",
     "amount": 1000,
     "probability": 1,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 10,
@@ -86,8 +77,7 @@
     "prize": "diamonds",
     "amount": 100,
     "probability": 12,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 11,
@@ -95,8 +85,7 @@
     "prize": "diamonds",
     "amount": 10,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 12,
@@ -104,8 +93,7 @@
     "prize": "diamonds",
     "amount": 2,
     "probability": 1600,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 13,
@@ -113,8 +101,7 @@
     "prize": "monster",
     "amount": 1,
     "probability": 2052,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 14,
@@ -122,8 +109,7 @@
     "prize": "monster",
     "amount": 2,
     "probability": 2052,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 15,
@@ -131,8 +117,7 @@
     "prize": "monster",
     "amount": 3,
     "probability": 2052,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 16,
@@ -140,8 +125,7 @@
     "prize": "monster",
     "amount": 4,
     "probability": 2052,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 17,
@@ -149,8 +133,7 @@
     "prize": "monster",
     "amount": 5,
     "probability": 2052,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 18,
@@ -158,8 +141,7 @@
     "prize": "monster",
     "amount": 6,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 19,
@@ -167,8 +149,7 @@
     "prize": "monster",
     "amount": 7,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 20,
@@ -176,8 +157,7 @@
     "prize": "monster",
     "amount": 8,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 21,
@@ -185,8 +165,7 @@
     "prize": "monster",
     "amount": 9,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 22,
@@ -194,8 +173,7 @@
     "prize": "monster",
     "amount": 10,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 23,
@@ -203,8 +181,7 @@
     "prize": "monster",
     "amount": 11,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 24,
@@ -212,8 +189,7 @@
     "prize": "monster",
     "amount": 12,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 25,
@@ -221,8 +197,7 @@
     "prize": "monster",
     "amount": 13,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 26,
@@ -230,8 +205,7 @@
     "prize": "monster",
     "amount": 14,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 27,
@@ -239,8 +213,7 @@
     "prize": "monster",
     "amount": 15,
     "probability": 205,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 28,
@@ -248,8 +221,7 @@
     "prize": "monster",
     "amount": 16,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 29,
@@ -257,8 +229,7 @@
     "prize": "monster",
     "amount": 17,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 30,
@@ -266,8 +237,7 @@
     "prize": "monster",
     "amount": 18,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 31,
@@ -275,8 +245,7 @@
     "prize": "monster",
     "amount": 19,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 32,
@@ -284,8 +253,7 @@
     "prize": "monster",
     "amount": 20,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 33,
@@ -293,8 +261,7 @@
     "prize": "monster",
     "amount": 21,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 34,
@@ -302,8 +269,7 @@
     "prize": "monster",
     "amount": 22,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 36,
@@ -311,8 +277,7 @@
     "prize": "monster",
     "amount": 23,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 37,
@@ -320,8 +285,7 @@
     "prize": "monster",
     "amount": 24,
     "probability": 123,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 38,
@@ -329,8 +293,7 @@
     "prize": "monster",
     "amount": 25,
     "probability": 41,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 39,
@@ -338,8 +301,7 @@
     "prize": "monster",
     "amount": 26,
     "probability": 41,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 40,
@@ -347,8 +309,7 @@
     "prize": "monster",
     "amount": 27,
     "probability": 41,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 41,
@@ -356,8 +317,7 @@
     "prize": "monster",
     "amount": 28,
     "probability": 41,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 42,
@@ -365,8 +325,7 @@
     "prize": "monster",
     "amount": 29,
     "probability": 41,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 43,
@@ -374,8 +333,7 @@
     "prize": "monster",
     "amount": 32,
     "probability": 24,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 44,
@@ -383,8 +341,7 @@
     "prize": "monster",
     "amount": 33,
     "probability": 24,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 45,
@@ -392,8 +349,7 @@
     "prize": "monster",
     "amount": 49,
     "probability": 24,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 46,
@@ -401,8 +357,7 @@
     "prize": "monster",
     "amount": 26,
     "probability": 24,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 47,
@@ -410,8 +365,7 @@
     "prize": "monster",
     "amount": 34,
     "probability": 24,
-    "is_top_prize": 1,
-    "min_server_version": "0.0"
+    "is_top_prize": 1
   },
   {
     "id": 48,
@@ -419,8 +373,7 @@
     "prize": "monster",
     "amount": 60,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 49,
@@ -428,8 +381,7 @@
     "prize": "monster",
     "amount": 61,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 50,
@@ -437,8 +389,7 @@
     "prize": "monster",
     "amount": 62,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 51,
@@ -446,8 +397,7 @@
     "prize": "monster",
     "amount": 63,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 52,
@@ -455,8 +405,7 @@
     "prize": "monster",
     "amount": 64,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 53,
@@ -464,8 +413,7 @@
     "prize": "monster",
     "amount": 65,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 54,
@@ -473,8 +421,7 @@
     "prize": "monster",
     "amount": 66,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 55,
@@ -482,8 +429,7 @@
     "prize": "monster",
     "amount": 67,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 56,
@@ -491,8 +437,7 @@
     "prize": "monster",
     "amount": 68,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 57,
@@ -500,8 +445,7 @@
     "prize": "monster",
     "amount": 69,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 58,
@@ -509,8 +453,7 @@
     "prize": "monster",
     "amount": 70,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 59,
@@ -518,8 +461,7 @@
     "prize": "monster",
     "amount": 71,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 60,
@@ -527,8 +469,7 @@
     "prize": "monster",
     "amount": 72,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 61,
@@ -536,8 +477,7 @@
     "prize": "monster",
     "amount": 73,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   },
   {
     "id": 62,
@@ -545,7 +485,6 @@
     "prize": "monster",
     "amount": 74,
     "probability": 100,
-    "is_top_prize": 0,
-    "min_server_version": "0.0"
+    "is_top_prize": 0
   }
 ]

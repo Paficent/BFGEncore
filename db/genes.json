@@ -2,92 +2,66 @@
   {
     "gene_id": 1,
     "gene_letter": "A",
-    "gene_graphic": "gene_air",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "1.0"
+    "gene_graphic": "gene_air"
   },
   {
     "gene_id": 2,
     "gene_letter": "B",
-    "gene_graphic": "gene_plant",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "1.0"
+    "gene_graphic": "gene_plant"
   },
   {
     "gene_id": 3,
     "gene_letter": "C",
-    "gene_graphic": "gene_earth",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "1.0"
+    "gene_graphic": "gene_earth"
   },
   {
     "gene_id": 4,
     "gene_letter": "D",
-    "gene_graphic": "gene_water",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "1.0"
+    "gene_graphic": "gene_water"
   },
   {
     "gene_id": 5,
     "gene_letter": "E",
-    "gene_graphic": "gene_cold",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "1.0"
+    "gene_graphic": "gene_cold"
   },
   {
     "gene_id": 6,
     "gene_letter": "F",
-    "gene_graphic": "gene_electricity",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "2.0"
+    "gene_graphic": "gene_electricity"
   },
   {
     "gene_id": 7,
     "gene_letter": "G",
-    "gene_graphic": "gene_ecto_plasma",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "2.0"
+    "gene_graphic": "gene_ecto_plasma"
   },
   {
     "gene_id": 10,
     "gene_letter": "K",
-    "gene_graphic": "gene_mech",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "2.0"
+    "gene_graphic": "gene_mech"
   },
   {
     "gene_id": 11,
     "gene_letter": "Z",
-    "gene_graphic": "gene_legendary",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "2.0"
+    "gene_graphic": "gene_legendary"
   },
   {
     "gene_id": 12,
     "gene_letter": "J",
-    "gene_graphic": "gene_shadow",
-    "last_changed": "2013-08-14 13:50:33",
-    "min_server_version": "2.0"
+    "gene_graphic": "gene_shadow"
   },
   {
     "gene_id": 13,
     "gene_letter": "L",
-    "gene_graphic": "gene_crystal",
-    "last_changed": "2013-09-16 13:19:32",
-    "min_server_version": "2.0"
+    "gene_graphic": "gene_crystal"
   },
   {
     "gene_id": 14,
     "gene_letter": "M",
-    "gene_graphic": "gene_toxic",
-    "last_changed": "2014-02-04 11:58:46",
-    "min_server_version": "3.1"
+    "gene_graphic": "gene_toxic"
   },
   {
     "gene_id": 15,
     "gene_letter": "P",
-    "gene_graphic": "gene_nightmare",
-    "last_changed": "2014-04-29 15:41:56",
-    "min_server_version": "3.2"
+    "gene_graphic": "gene_nightmare"
   }
 ]
