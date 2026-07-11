@@ -282,11 +282,11 @@ func (m *Manager) OnlinePlayers() []string {
 	defer m.mu.Unlock()
 	names := make([]string, 0, len(m.conns))
 	for id := range m.conns {
+		label := strconv.FormatInt(id, 10)
 		if p := m.players[id]; p != nil && p.DisplayName != "" {
-			names = append(names, p.DisplayName)
-		} else {
-			names = append(names, strconv.FormatInt(id, 10))
+			label = p.DisplayName + "  " + label
 		}
+		names = append(names, label)
 	}
 	sort.Strings(names)
 	return names

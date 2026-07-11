@@ -136,6 +136,8 @@ func (m *Manager) savePlayer(p *Player) error {
 	return m.store.Save(p.BBBID, blob, nowMS())
 }
 
+func (m *Manager) SavePlayer(p *Player) error { return m.savePlayer(p) }
+
 func (m *Manager) SaveAll() (int, error) {
 	if m.store == nil {
 		return 0, nil

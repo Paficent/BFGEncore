@@ -100,6 +100,13 @@ func (m *Manager) Push(bbbID int64, command string, payload *data.GFSObject) {
 	}
 }
 
+func (m *Manager) PushProperties(p *Player) {
+	if p == nil {
+		return
+	}
+	m.Push(p.BBBID, "gs_update_properties", data.MakeGFSObject().PutGFSArray("properties", p.GetProperties()))
+}
+
 func (m *Manager) handleHandshake(c *transport.Conn) {
 	sessionInfo := data.MakeGFSObject().
 		PutInt("ct", 1_000_000).

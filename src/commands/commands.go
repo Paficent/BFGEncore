@@ -15,11 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// TODO: Abstract this into multiple files when it becomes too big to manage
 package commands
 
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"paficent/bfg/game"
@@ -82,25 +84,99 @@ func builtins() []*Command {
 			Run: func(r *Registry, _ []string) (string, error) {
 				var b strings.Builder
 				for _, c := range r.Commands() {
-					fmt.Fprintf(&b, "%-10s %s\n", c.Name, c.Help)
+					fmt.Fprintf(&b, "%-14s %s\n", c.Name, c.Help)
 				}
 				return strings.TrimRight(b.String(), "\n"), nil
 			},
 		},
-		todo("give", "give <bbb_id> <coins|diamonds|food|shards|xp> <amount>", "grant currency to a player"),
-		todo("setlevel", "setlevel <bbb_id> <level>", "set a player's level"),
-		todo("save", "save", "force an immediate save of all loaded players"),
+		{
+			Name:  "save",
+			Usage: "save",
+			Help:  "save all loaded players now",
+			Run: func(r *Registry, _ []string) (string, error) {
+				n, err := r.mgr.SaveAll()
+				if err != nil {
+					return "", err
+				}
+				return fmt.Sprintf("saved %d player(s)", n), nil
+			},
+		},
+		{
+			Name:  "set_level",
+			Usage: "set_level <bbb_id> <level>",
+			Help:  "set a player's level (1-100)",
+			Run: func(r *Registry, args []string) (string, error) {
+				if len(args) != 2 {
+					return "", fmt.Errorf("usage: set_level <bbb_id> <level>")
+				}
+				p, err := r.player(args[0])
+				if err != nil {
+					return "", err
+				}
+				level, err := strconv.Atoi(args[1])
+				if err != nil || level < 1 || level > 100 {
+					return "", fmt.Errorf("level must be a number from 1 to 100")
+				}
+				p.Level = level
+				return r.persist(p, fmt.Sprintf("set %s to level %d", label(p), level))
+			},
+		},
+		giveCommand("give_coins", "coins", func(p *game.Player, n int64) bool { return p.AddProperties(n, 0, 0, 0, 0) }),
+		giveCommand("give_diamonds", "diamonds", func(p *game.Player, n int64) bool { return p.AddProperties(0, n, 0, 0, 0) }),
+		giveCommand("give_food", "food", func(p *game.Player, n int64) bool { return p.AddProperties(0, 0, n, 0, 0) }),
+		giveCommand("give_xp", "xp", func(p *game.Player, n int64) bool { return p.AddProperties(0, 0, 0, n, 0) }),
+		giveCommand("give_shards", "shards", func(p *game.Player, n int64) bool { return p.AddProperties(0, 0, 0, 0, n) }),
 	}
 }
 
-// lowkey everything rn
-func todo(name, usage, help string) *Command {
+func giveCommand(name, currency string, add func(*game.Player, int64) bool) *Command {
 	return &Command{
 		Name:  name,
-		Usage: usage,
-		Help:  help + " (not implemented yet)",
-		Run: func(r *Registry, _ []string) (string, error) {
-			return "", fmt.Errorf("%q is not implemented yet — usage: %s", name, usage)
+		Usage: name + " <bbb_id> <amount>",
+		Help:  "give " + currency + " to a player (negative to remove)",
+		Run: func(r *Registry, args []string) (string, error) {
+			if len(args) != 2 {
+				return "", fmt.Errorf("usage: %s <bbb_id> <amount>", name)
+			}
+			p, err := r.player(args[0])
+			if err != nil {
+				return "", err
+			}
+			amount, err := strconv.ParseInt(args[1], 10, 64)
+			if err != nil {
+				return "", fmt.Errorf("invalid amount %q", args[1])
+			}
+			if !add(p, amount) {
+				return "", fmt.Errorf("%s would drop %s below zero", label(p), currency)
+			}
+			return r.persist(p, fmt.Sprintf("gave %s %d %s", label(p), amount, currency))
 		},
 	}
+}
+
+func (r *Registry) player(arg string) (*game.Player, error) {
+	id, err := strconv.ParseInt(arg, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid bbb_id %q", arg)
+	}
+	p := r.mgr.Player(id)
+	if p == nil {
+		return nil, fmt.Errorf("no loaded player with bbb_id %d", id)
+	}
+	return p, nil
+}
+
+func (r *Registry) persist(p *game.Player, msg string) (string, error) {
+	if err := r.mgr.SavePlayer(p); err != nil {
+		return "", fmt.Errorf("%s (but saving failed: %v)", msg, err)
+	}
+	r.mgr.PushProperties(p)
+	return msg, nil
+}
+
+func label(p *game.Player) string {
+	if p.DisplayName != "" {
+		return fmt.Sprintf("%s (%d)", p.DisplayName, p.BBBID)
+	}
+	return strconv.FormatInt(p.BBBID, 10)
 }

@@ -43,6 +43,7 @@ var (
 	promptStyle = lipgloss.NewStyle().Foreground(tui.Accent).Bold(true)
 	cmdStyle    = lipgloss.NewStyle().Foreground(tui.Accent)
 	errStyle    = lipgloss.NewStyle().Foreground(tui.Bad)
+	respStyle   = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "238", Dark: "250"})
 	logStyle    = lipgloss.NewStyle().Foreground(tui.Subtle)
 	dimStyle    = lipgloss.NewStyle().Foreground(tui.Subtle)
 )
@@ -158,7 +159,7 @@ func (m serverTUI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		return m.onKey(msg)
 	case logLinesMsg:
-		m.pushLog(msg...)
+		m.pushLog(logStyle, msg...)
 		return m, waitForLogs(m.logs.ch)
 	case tickMsg:
 		m.stats = m.mgr.Stats()
@@ -209,12 +210,12 @@ func (m serverTUI) onKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
 }
 
 func (m *serverTUI) runCommand(line string) {
-	m.pushLog("> " + line)
+	m.pushLog(cmdStyle, "> "+line)
 	switch out, err := m.cmds.Run(line); {
 	case err != nil:
-		m.pushLog("! " + err.Error())
+		m.pushLog(errStyle, "! "+err.Error())
 	case out != "":
-		m.pushLog(out)
+		m.pushLog(respStyle, out)
 	}
 }
 
@@ -247,9 +248,11 @@ func (m *serverTUI) applyLayout() {
 	m.vp.GotoBottom()
 }
 
-func (m *serverTUI) pushLog(lines ...string) {
+func (m *serverTUI) pushLog(style lipgloss.Style, lines ...string) {
 	for _, l := range lines {
-		m.buf = append(m.buf, strings.Split(l, "\n")...)
+		for _, ln := range strings.Split(l, "\n") {
+			m.buf = append(m.buf, style.Render(ln))
+		}
 	}
 	if len(m.buf) > maxLogLines {
 		m.buf = m.buf[len(m.buf)-maxLogLines:]
@@ -261,21 +264,7 @@ func (m *serverTUI) pushLog(lines ...string) {
 }
 
 func (m serverTUI) renderLog() string {
-	var b strings.Builder
-	for i, ln := range m.buf {
-		if i > 0 {
-			b.WriteByte('\n')
-		}
-		switch {
-		case strings.HasPrefix(ln, "> "):
-			b.WriteString(cmdStyle.Render(ln))
-		case strings.HasPrefix(ln, "! "):
-			b.WriteString(errStyle.Render(ln))
-		default:
-			b.WriteString(logStyle.Render(ln))
-		}
-	}
-	return b.String()
+	return strings.Join(m.buf, "\n")
 }
 
 func truncate(s string, w int) string {
