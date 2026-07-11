@@ -81,6 +81,8 @@ type Manager struct {
 
 	timers *timerService
 	sendMu sync.Mutex // serialises writes: handler + timer goroutines can both send
+
+	pendingScratch map[int64]db.ScratchOff
 }
 
 func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
@@ -92,6 +94,8 @@ func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
 		players: map[int64]*Player{},
 		conns:   map[int64]*transport.Conn{},
 		timers:  newTimerService(),
+
+		pendingScratch: map[int64]db.ScratchOff{},
 	}
 	m.loadPlayers()
 
@@ -105,6 +109,56 @@ func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
 
 	m.rearmUpgradeTimers()
 	return m
+}
+
+func (m *Manager) setPendingScratch(id int64, s db.ScratchOff) {
+	m.mu.Lock()
+	m.pendingScratch[id] = s
+	m.mu.Unlock()
+}
+
+func (m *Manager) takePendingScratch(id int64) (db.ScratchOff, bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	s, ok := m.pendingScratch[id]
+	if ok {
+		delete(m.pendingScratch, id)
+	}
+	return s, ok
+}
+
+func (m *Manager) peekPendingScratch(id int64) (db.ScratchOff, bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	s, ok := m.pendingScratch[id]
+	return s, ok
+}
+
+func (m *Manager) scratchReveal(prize db.ScratchOff, props *data.GFSArray) *data.GFSObject {
+	if prize.Prize == "monster" {
+		return data.MakeGFSObject().
+			PutUtfString("type", "M").
+			PutLong("success", 0).
+			PutLong("has_egg", 1).
+			PutGFSArray("properties", props)
+	}
+	scaled := data.MakeGFSObject().
+		PutInt("amount", prize.Amount)
+
+	ticket := data.MakeGFSObject().
+		PutInt("amount", prize.Amount).
+		PutInt("matches", 3).
+		PutUtfString("type", prize.Type).
+		PutUtfString("prize", prize.Prize).
+		PutGFSObject("scaled_prizes", scaled)
+	// PutInt("matches", rand.Intn(3)). // TODO: this probably isnt the actual probability used in the game
+
+	return data.MakeGFSObject().
+		PutLong("success", 1).
+		PutUtfString("type", prize.Type).
+		PutGFSObject("ticket", ticket).
+		PutGFSArray("properties", props)
+
 }
 
 func (m *Manager) Handle(command string, fn HandlerFunc) {

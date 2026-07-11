@@ -49,6 +49,7 @@ type StaticData struct {
 	monsterLevels  map[[2]int]LevelInfo
 	teleports      map[[2]int]TeleportDest
 	breedingCombos map[[2]int][]breedCombo
+	scratchByType  map[string][]ScratchOff
 }
 
 func LoadStatic(db *DB) *StaticData {
@@ -83,6 +84,7 @@ func LoadStatic(db *DB) *StaticData {
 		monsterLevels:  monLevels,
 		teleports:      loadTeleportInfo(db),
 		breedingCombos: loadBreedingCombos(db),
+		scratchByType:  loadScratchOffs(db),
 	}
 }
 

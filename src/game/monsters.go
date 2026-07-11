@@ -637,3 +637,34 @@ func registerMonsterHandlers(m *Manager) {
 			PutGFSArray("properties", p.GetProperties()))
 	})
 }
+
+func (m *Manager) awardEgg(ctx *Context, p *Player, island *Island, monsterID int) {
+	info, ok := m.Static.Monster(monsterID)
+	if !ok || island == nil {
+		return
+	}
+	nursery := island.FindStructureByType(1)
+	if nursery == nil {
+		return
+	}
+	now := nowMS()
+	egg := &Egg{
+		IslandID:        island.UserIslandID,
+		LaidOn:          now,
+		HatchesOn:       now + int64(info.BuildTime)*1000,
+		MonsterID:       int64(monsterID),
+		UserEggID:       p.NextEggID(),
+		UserStructureID: nursery.UserStructureID,
+	}
+	island.Eggs = append(island.Eggs, egg)
+
+	eggs := data.MakeGFSArray()
+	eggs.AddSFSObject(egg.GetSFSObject())
+	ctx.Reply("gs_update_eggs", data.MakeGFSObject().PutGFSArray("eggs", eggs))
+
+	ctx.Reply("gs_buy_egg", data.MakeGFSObject().
+		PutGFSObject("user_egg", egg.GetSFSObject()).
+		PutBool("success", true).
+		PutBool("remove_buyback", false).
+		PutGFSArray("properties", p.GetProperties()))
+}

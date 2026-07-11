@@ -23,39 +23,45 @@ import (
 	"github.com/Paficent/GoFox2X/data"
 )
 
+const (
+	scratchOffPrice        = 2
+	monsterScratchOffPrice = 10
+)
+
 func registerEconomyHandlers(m *Manager) {
 	m.HandleReply("gs_player_has_scratch_off", func(ctx *Context) *data.GFSObject {
-		return data.MakeGFSObject().PutBool("success", false)
+		return data.MakeGFSObject().
+			PutUtfString("type", ctx.Str("type")).
+			PutLong("success", 0)
 	})
 
-	m.HandleReply("gs_purchase_scratch_off", func(ctx *Context) *data.GFSObject {
-		ticket := data.MakeGFSObject().
-			PutInt("id", 9).
-			PutUtfString("type", "C").
-			PutInt("amount", 1000).
-			PutUtfString("prize", "diamonds")
-		scaled := data.MakeGFSObject().
-			PutInt("tier1", 50).
-			PutInt("tier2", 100).
-			PutInt("tier3", 200)
-		resp := data.MakeGFSObject().
-			PutBool("success", false).
-			PutGFSObject("ticket", ticket).
-			PutGFSObject("scaled_prizes", scaled)
-		if p := ctx.Player(); p != nil {
-			resp.PutGFSArray("properties", p.GetProperties())
+	m.HandlePlayer("gs_purchase_scratch_off", func(ctx *Context, p *Player) {
+		kind := ctx.Str("type")
+		switch kind {
+		case "C":
+			p.Buy(0, scratchOffPrice, 0)
+		case "M":
+			p.Buy(0, monsterScratchOffPrice, 0)
+		default:
+			return
 		}
-		return resp
+		prize, ok := m.Static.RollScratchOff(kind)
+		if !ok {
+			return
+		}
+		m.setPendingScratch(p.BBBID, prize)
+		ctx.Reply("gs_play_scratch_off", m.scratchReveal(prize, p.GetProperties()))
 	})
 
-	// scratch offs are currently unimplemented
-	// not replying with false (until implemented) causes UI bugs
-	m.HandleReply("gs_play_scratch_off", func(ctx *Context) *data.GFSObject {
-		resp := data.MakeGFSObject().PutBool("success", false)
-		if p := ctx.Player(); p != nil {
-			resp.PutGFSArray("properties", p.GetProperties())
+	m.HandlePlayer("gs_play_scratch_off", func(ctx *Context, p *Player) {
+		prize, ok := m.peekPendingScratch(p.BBBID)
+		if !ok {
+			ctx.Reply("gs_play_scratch_off", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutGFSArray("properties", p.GetProperties()))
+			return
 		}
-		return resp
+		ctx.Reply("gs_play_scratch_off", m.scratchReveal(prize, p.GetProperties()))
 	})
 
 	m.HandleReply("gs_get_island_rank", func(ctx *Context) *data.GFSObject {
@@ -224,7 +230,6 @@ func registerEconomyHandlers(m *Manager) {
 	// success + the player's current properties (for some reason)
 	withProperties := []string{
 		"gs_collect_daily_reward",
-		"gs_collect_scratch_off",
 	}
 	for _, cmd := range withProperties {
 		m.HandleReply(cmd, func(ctx *Context) *data.GFSObject {
@@ -235,6 +240,32 @@ func registerEconomyHandlers(m *Manager) {
 			return resp
 		})
 	}
+
+	m.HandlePlayer("gs_collect_scratch_off", func(ctx *Context, p *Player) {
+		prize, ok := m.takePendingScratch(p.BBBID)
+		if !ok {
+			ctx.Reply("gs_collect_scratch_off", data.MakeGFSObject().PutLong("success", 0))
+			return
+		}
+		if prize.Prize == "monster" {
+			m.awardEgg(ctx, p, ctx.Island(), prize.Amount)
+			ctx.Reply("gs_collect_scratch_off", data.MakeGFSObject().
+				PutLong("success", 0).
+				PutLong("has_egg", 0))
+			return
+		}
+		switch prize.Prize {
+		case "coins":
+			p.AddProperties(int64(prize.Amount), 0, 0, 0, 0)
+		case "diamonds":
+			p.AddProperties(0, int64(prize.Amount), 0, 0, 0)
+		case "food":
+			p.AddProperties(0, 0, int64(prize.Amount), 0, 0)
+		}
+		ctx.Reply("gs_collect_scratch_off", data.MakeGFSObject().
+			PutLong("success", 1).
+			PutGFSArray("properties", p.GetProperties()))
+	})
 
 	m.HandleReply("gs_rate_island", func(ctx *Context) *data.GFSObject {
 		return data.MakeGFSObject().PutBool("success", true)

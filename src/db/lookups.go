@@ -122,3 +122,35 @@ func (sd *StaticData) Teleport(island, monster int) (TeleportDest, bool) {
 	d, ok := sd.teleports[[2]int{island, monster}]
 	return d, ok
 }
+
+func loadScratchOffs(db *DB) map[string][]ScratchOff {
+	out := map[string][]ScratchOff{}
+	for _, s := range db.ScratchOffs {
+		out[s.Type] = append(out[s.Type], s)
+	}
+	return out
+}
+
+func (sd *StaticData) RollScratchOff(kind string) (ScratchOff, bool) {
+	pool := sd.scratchByType[kind]
+	total := 0
+	for _, s := range pool {
+		if s.Probability > 0 {
+			total += s.Probability
+		}
+	}
+	if total == 0 {
+		return ScratchOff{}, false
+	}
+	n := rand.Intn(total)
+	for _, s := range pool {
+		if s.Probability <= 0 {
+			continue
+		}
+		if n < s.Probability {
+			return s, true
+		}
+		n -= s.Probability
+	}
+	return ScratchOff{}, false
+}
