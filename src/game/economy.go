@@ -26,13 +26,22 @@ import (
 const (
 	scratchOffPrice        = 2
 	monsterScratchOffPrice = 10
+
+	monsterScratchCooldownMS = 7 * 24 * 60 * 60 * 1000
 )
 
 func registerEconomyHandlers(m *Manager) {
 	m.HandleReply("gs_player_has_scratch_off", func(ctx *Context) *data.GFSObject {
+		kind := ctx.Str("type")
+		success := int64(0)
+		if kind == "M" {
+			if p := ctx.Player(); p != nil && p.freeMonsterScratch(nowMS()) {
+				success = 1
+			}
+		}
 		return data.MakeGFSObject().
-			PutUtfString("type", ctx.Str("type")).
-			PutLong("success", 0)
+			PutUtfString("type", kind).
+			PutLong("success", success)
 	})
 
 	m.HandlePlayer("gs_purchase_scratch_off", func(ctx *Context, p *Player) {
@@ -49,19 +58,27 @@ func registerEconomyHandlers(m *Manager) {
 		if !ok {
 			return
 		}
-		m.setPendingScratch(p.BBBID, prize)
+		m.setPendingScratch(p.BBBID, kind, prize)
 		ctx.Reply("gs_play_scratch_off", m.scratchReveal(prize, p.GetProperties()))
 	})
 
 	m.HandlePlayer("gs_play_scratch_off", func(ctx *Context, p *Player) {
-		prize, ok := m.peekPendingScratch(p.BBBID)
-		if !ok {
-			ctx.Reply("gs_play_scratch_off", data.MakeGFSObject().
-				PutLong("success", 0).
-				PutGFSArray("properties", p.GetProperties()))
+		kind := ctx.Str("type")
+		if prize, ok := m.peekPendingScratch(p.BBBID, kind); ok {
+			ctx.Reply("gs_play_scratch_off", m.scratchReveal(prize, p.GetProperties()))
 			return
 		}
-		ctx.Reply("gs_play_scratch_off", m.scratchReveal(prize, p.GetProperties()))
+		if kind == "M" && p.freeMonsterScratch(nowMS()) {
+			if prize, ok := m.Static.RollScratchOff("M"); ok {
+				p.MonsterScratchTime = nowMS()
+				m.setPendingScratch(p.BBBID, "M", prize)
+				ctx.Reply("gs_play_scratch_off", m.scratchReveal(prize, p.GetProperties()))
+				return
+			}
+		}
+		ctx.Reply("gs_play_scratch_off", data.MakeGFSObject().
+			PutLong("success", 0).
+			PutGFSArray("properties", p.GetProperties()))
 	})
 
 	m.HandleReply("gs_get_island_rank", func(ctx *Context) *data.GFSObject {
@@ -104,6 +121,10 @@ func registerEconomyHandlers(m *Manager) {
 	})
 
 	m.Handle("gs_get_memory_game_numbers", func(ctx *Context) {
+		local := 0
+		if p := ctx.Player(); p != nil {
+			local = p.MemoryHighScore
+		}
 		ctx.Reply("gs_get_memory_game_numbers", data.MakeGFSObject().
 			// difficulty?
 			PutInt("tier1ResponseLevel", 5).
@@ -129,8 +150,8 @@ func registerEconomyHandlers(m *Manager) {
 			PutInt("fixedToneDuration", 0).
 			PutInt("memoryGameAudioSampleNumber", 100).
 			// scoring
-			PutInt("topscore", 10). // TODO: actually add this with logic behind it
-			PutInt("prev_highscore", 0).
+			PutInt("topscore", m.recordMemoryScore(0)).
+			PutInt("prev_highscore", local).
 			PutBool("success", true))
 	})
 
@@ -144,6 +165,37 @@ func registerEconomyHandlers(m *Manager) {
 	m.HandleReply("gs_purchase_memory_mini_game", func(ctx *Context) *data.GFSObject {
 		//PutInt("diamond_cost", 0).
 		return data.MakeGFSObject().PutInt("diamond_cost", 2).PutInt("coin_cost", 0).PutBool("success", true)
+	})
+
+	m.HandlePlayer("gs_collect_memory_mini_game", func(ctx *Context, p *Player) {
+		score := ctx.Int("score")
+		prev := p.MemoryHighScore
+		newHigh := int64(0)
+		if score > p.MemoryHighScore {
+			p.MemoryHighScore = score
+			newHigh = 1
+		}
+		globalHigh := m.recordMemoryScore(score)
+
+		coinReward := score * 100
+		foodReward := score * 50
+		diamondReward := 0
+		if newHigh != 0 {
+			diamondReward = 2
+		}
+		p.AddProperties(int64(coinReward), int64(diamondReward), int64(foodReward), 0, 0)
+
+		ctx.Reply("gs_collect_memory_mini_game", data.MakeGFSObject().
+			PutLong("new_high_score", newHigh).
+			PutInt("diamond_reward", diamondReward).
+			PutInt("coin_reward", coinReward).
+			PutInt("food_reward", foodReward).
+			PutGFSArray("properties", p.GetProperties()).
+			PutInt("topscore", globalHigh).
+			PutInt("prev_highscore", prev).
+			PutInt("diamond_replay_cost", 2).
+			PutInt("coin_replay_cost", 0).
+			PutBool("success", true))
 	})
 
 	m.HandlePlayer("gs_place_on_gold_island", func(ctx *Context, p *Player) {
@@ -249,7 +301,7 @@ func registerEconomyHandlers(m *Manager) {
 	}
 
 	m.HandlePlayer("gs_collect_scratch_off", func(ctx *Context, p *Player) {
-		prize, ok := m.takePendingScratch(p.BBBID)
+		prize, ok := m.takePendingScratch(p.BBBID, ctx.Str("type"))
 		if !ok {
 			ctx.Reply("gs_collect_scratch_off", data.MakeGFSObject().PutLong("success", 0))
 			return

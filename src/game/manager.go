@@ -20,6 +20,7 @@ package game
 
 import (
 	"log"
+	"math/rand"
 	"sort"
 	"strconv"
 	"sync"
@@ -82,7 +83,13 @@ type Manager struct {
 	timers *timerService
 	sendMu sync.Mutex // serialises writes: handler + timer goroutines can both send
 
-	pendingScratch map[int64]db.ScratchOff
+	pendingScratch  map[scratchKey]db.ScratchOff
+	memoryHighScore int
+}
+
+type scratchKey struct {
+	id  int64
+	typ string
 }
 
 func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
@@ -95,7 +102,7 @@ func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
 		conns:   map[int64]*transport.Conn{},
 		timers:  newTimerService(),
 
-		pendingScratch: map[int64]db.ScratchOff{},
+		pendingScratch: map[scratchKey]db.ScratchOff{},
 	}
 	m.loadPlayers()
 
@@ -111,27 +118,37 @@ func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
 	return m
 }
 
-func (m *Manager) setPendingScratch(id int64, s db.ScratchOff) {
+func (m *Manager) setPendingScratch(id int64, typ string, s db.ScratchOff) {
 	m.mu.Lock()
-	m.pendingScratch[id] = s
+	m.pendingScratch[scratchKey{id, typ}] = s
 	m.mu.Unlock()
 }
 
-func (m *Manager) takePendingScratch(id int64) (db.ScratchOff, bool) {
+func (m *Manager) takePendingScratch(id int64, typ string) (db.ScratchOff, bool) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	s, ok := m.pendingScratch[id]
+	k := scratchKey{id, typ}
+	s, ok := m.pendingScratch[k]
 	if ok {
-		delete(m.pendingScratch, id)
+		delete(m.pendingScratch, k)
 	}
 	return s, ok
 }
 
-func (m *Manager) peekPendingScratch(id int64) (db.ScratchOff, bool) {
+func (m *Manager) peekPendingScratch(id int64, typ string) (db.ScratchOff, bool) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	s, ok := m.pendingScratch[id]
+	s, ok := m.pendingScratch[scratchKey{id, typ}]
 	return s, ok
+}
+
+func (m *Manager) recordMemoryScore(score int) int {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if score > m.memoryHighScore {
+		m.memoryHighScore = score
+	}
+	return m.memoryHighScore
 }
 
 func (m *Manager) scratchReveal(prize db.ScratchOff, props *data.GFSArray) *data.GFSObject {
@@ -142,23 +159,24 @@ func (m *Manager) scratchReveal(prize db.ScratchOff, props *data.GFSArray) *data
 			PutLong("has_egg", 1).
 			PutGFSArray("properties", props)
 	}
+	matches := 3 + rand.Intn(4)
 	scaled := data.MakeGFSObject().
 		PutInt("amount", prize.Amount)
-
 	ticket := data.MakeGFSObject().
 		PutInt("amount", prize.Amount).
-		PutInt("matches", 3).
+		PutInt("matches", matches).
+		PutGFSObject("scaled_prizes", scaled).
 		PutUtfString("type", prize.Type).
-		PutUtfString("prize", prize.Prize).
-		PutGFSObject("scaled_prizes", scaled)
-	// PutInt("matches", rand.Intn(3)). // TODO: this probably isnt the actual probability used in the game
-
+		PutUtfString("prize", prize.Prize)
 	return data.MakeGFSObject().
 		PutLong("success", 1).
 		PutUtfString("type", prize.Type).
+		PutUtfString("prize", prize.Prize).
+		PutInt("amount", prize.Amount).
+		PutInt("matches", matches).
 		PutGFSObject("ticket", ticket).
+		PutGFSObject("scaled_prizes", scaled).
 		PutGFSArray("properties", props)
-
 }
 
 func (m *Manager) Handle(command string, fn HandlerFunc) {

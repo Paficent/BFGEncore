@@ -44,6 +44,9 @@ type playerSave struct {
 	IslandSeq    int64     `json:"island_seq"`
 	Islands      []*Island `json:"islands"`
 
+	MonsterScratchTime int64 `json:"monster_scratch_time"`
+	MemoryHighScore    int   `json:"memory_high_score"`
+
 	QuestStatus   map[int]string `json:"quest_status"`
 	QuestCounters map[string]int `json:"quest_counters"`
 }
@@ -67,6 +70,9 @@ func (p *Player) toSave() *playerSave {
 		StructureSeq: p.structureSeq,
 		IslandSeq:    p.islandSeq,
 		Islands:      p.Islands,
+
+		MonsterScratchTime: p.MonsterScratchTime,
+		MemoryHighScore:    p.MemoryHighScore,
 
 		QuestStatus:   p.QuestStatus,
 		QuestCounters: p.QuestCounters,
@@ -94,6 +100,9 @@ func (ps *playerSave) toPlayer(static *db.StaticData) *Player {
 		structureSeq: ps.StructureSeq,
 		islandSeq:    ps.IslandSeq,
 
+		MonsterScratchTime: ps.MonsterScratchTime,
+		MemoryHighScore:    ps.MemoryHighScore,
+
 		QuestStatus:   ps.QuestStatus,
 		QuestCounters: ps.QuestCounters,
 	}
@@ -119,6 +128,9 @@ func (m *Manager) loadPlayers() {
 			ps.BBBID = rec.BBBID
 		}
 		m.players[ps.BBBID] = ps.toPlayer(m.Static)
+		if ps.MemoryHighScore > m.memoryHighScore {
+			m.memoryHighScore = ps.MemoryHighScore
+		}
 	}
 	n := len(m.players)
 	m.mu.Unlock()

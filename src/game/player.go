@@ -45,6 +45,9 @@ type Player struct {
 	ActiveIsland int64
 	Islands      []*Island
 
+	MonsterScratchTime int64
+	MemoryHighScore    int
+
 	QuestStatus   map[int]string // TODO: NEED TO CONFIRM THIS WITH THE ACTUAL CLIENT
 	QuestCounters map[string]int //
 
@@ -200,7 +203,13 @@ func (p *Player) GetProperties() *data.GFSArray {
 	props.AddSFSObject(data.MakeGFSObject().PutInt("xp", clampDisplay(p.XP)))
 	props.AddSFSObject(data.MakeGFSObject().PutInt("ethereal_currency", clampDisplay(p.Shards)))
 	props.AddSFSObject(data.MakeGFSObject().PutInt("level", p.Level))
+	props.AddSFSObject(data.MakeGFSObject().PutLong("monsterScratchTime", p.MonsterScratchTime))
+	props.AddSFSObject(data.MakeGFSObject().PutBool("has_scratch_off_m", p.freeMonsterScratch(nowMS())))
 	return props
+}
+
+func (p *Player) freeMonsterScratch(now int64) bool {
+	return now-p.MonsterScratchTime >= monsterScratchCooldownMS
 }
 
 func (p *Player) GetSFSObject() *data.GFSObject {
