@@ -56,6 +56,10 @@ func registerMonsterHandlers(m *Manager) {
 			UserEggID:       p.NextEggID(),
 			UserStructureID: nursery.UserStructureID,
 		}
+
+        if info.CostDiamonds > 0 {
+            egg.HatchesOn = now
+        }
 		island.Eggs = append(island.Eggs, egg)
 
 		eggs := data.MakeGFSArray()
