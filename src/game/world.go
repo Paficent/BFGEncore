@@ -20,20 +20,21 @@ package game
 import "github.com/Paficent/GoFox2X/data"
 
 type Structure struct {
-	UserStructureID   int64
-	UserIslandID      int64
-	StructureID       int64
-	X                 int
-	Y                 int
-	IsComplete        int
-	IsUpgrading       int
-	UpgradeTo         int64 // target structure_id while upgrading; 0 when idle
-	Flip              int
-	Muted             int
-	Scale             float64
-	DateCreated       int64
-	BuildingCompleted int64
-	LastCollection    int64
+	UserStructureID    int64
+	UserIslandID       int64
+	StructureID        int64
+	X                  int
+	Y                  int
+	IsComplete         int
+	IsObstacleComplete int
+	IsUpgrading        int
+	UpgradeTo          int64 // target structure_id while upgrading; 0 when idle
+	Flip               int
+	Muted              int
+	Scale              float64
+	DateCreated        int64
+	BuildingCompleted  int64
+	LastCollection     int64
 }
 
 func (s *Structure) GetSFSObject() *data.GFSObject {
@@ -51,12 +52,13 @@ func (s *Structure) GetSFSObject() *data.GFSObject {
 		PutInt("is_complete", s.IsComplete).
 		PutInt("is_upgrading", s.IsUpgrading).
 		PutInt("in_warehouse", 0).
-		PutLong("date_created", s.DateCreated).
+
 		PutLong("last_collection", s.LastCollection).
 		PutDouble("diamonds_collected", 0)
 
-	if s.IsComplete == 0 || s.IsUpgrading != 0 {
+	if s.IsComplete == 0 || s.IsObstacleComplete == 0 || s.IsUpgrading != 0 {
 		obj.PutLong("building_completed", s.BuildingCompleted)
+		obj.PutLong("date_created", s.DateCreated)
 	}
 	inv := data.MakeGFSArray()
 	inv.AddSFSObject(data.MakeGFSObject().PutInt("m", 0))
