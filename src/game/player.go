@@ -86,7 +86,7 @@ func newPlayer(bbbID, userID int64, static *db.StaticData) *Player {
 }
 
 func (p *Player) handleLevelUp() {
-	for p.Level < 100 {
+	for p.Level < 30 {
 		nextXP, ok := p.levelXP[p.Level+1]
 		if !ok {
 			break
@@ -223,7 +223,7 @@ func (p *Player) GetSFSObject() *data.GFSObject {
 		PutLong("last_login", now).
 		PutInt("xp", clampDisplay(p.XP)).
 		PutInt("level", p.Level).
-		PutInt("max_level", 100).
+		PutInt("max_level", 30).
 		PutInt("bbb_id", int(p.BBBID)).
 		PutInt("user_id", int(p.UserID)).
 		PutInt("referral", 0).

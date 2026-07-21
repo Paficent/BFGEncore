@@ -46,6 +46,7 @@ func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
 			LastCollection:    now,
 			Muted:             0,
 			IsComplete:        1,
+			IsObstacleComplete:        1,
 			IsUpgrading:       0,
 			BuildingCompleted: now,
 		})

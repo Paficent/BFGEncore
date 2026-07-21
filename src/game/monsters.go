@@ -56,6 +56,10 @@ func registerMonsterHandlers(m *Manager) {
 			UserEggID:       p.NextEggID(),
 			UserStructureID: nursery.UserStructureID,
 		}
+
+        if info.CostDiamonds > 0 {
+            egg.HatchesOn = now
+        }
 		island.Eggs = append(island.Eggs, egg)
 
 		eggs := data.MakeGFSArray()
@@ -216,6 +220,22 @@ func registerMonsterHandlers(m *Manager) {
 			StartedOn:      now,
 			CompleteOn:     now + int64(info.BuildTime)*1000,
 		}
+
+		// ok so originally like, i was do some stuff and make it work for all single ethereals
+		// (even though its how it functions in the actual server as proven by the vita)
+		// but like that makes backporting wubbox harder
+		// maybe i'll like make it as a json at some point idk
+		// but is it about modding or accuracy? i mean its functionaly the same but do we want accurate logic
+
+		if island.IslandID == 7 {
+			singleEthereals := [...] int {50, 51, 54, 58, 76}
+			for _, v := range singleEthereals {
+    			if breeding.NewMonster == v {
+					breeding.CompleteOn = now + int64(36000)*1000
+				}
+			}
+		}
+
 		island.Breedings = append(island.Breedings, breeding)
 
 		ctx.Reply("gs_breed_monsters", data.MakeGFSObject().
@@ -252,6 +272,14 @@ func registerMonsterHandlers(m *Manager) {
 			MonsterID:       int64(breeding.NewMonster),
 			UserEggID:       p.NextEggID(),
 			UserStructureID: structureID,
+		}
+		if island.IslandID == 7 {
+			singleEthereals := [...] int {50, 51, 54, 58, 76}
+			for _, v := range singleEthereals {
+    			if int(egg.MonsterID) == v {
+					egg.HatchesOn = now + int64(36000)*1000
+				}
+			}
 		}
 		island.Eggs = append(island.Eggs, egg)
 
@@ -615,6 +643,9 @@ func registerMonsterHandlers(m *Manager) {
 		}
 		srcIsland.RemoveMonster(umid)
 		now := nowMS()
+
+
+
 		egg := &Egg{
 			IslandID:        dstIsland.UserIslandID,
 			LaidOn:          now,
@@ -623,6 +654,13 @@ func registerMonsterHandlers(m *Manager) {
 			UserEggID:       p.NextEggID(),
 			UserStructureID: nursery.UserStructureID,
 		}
+
+		// 36000 is 10 hours as presented in build time
+		
+		if dstIsland.IslandID == 7 {
+			egg.HatchesOn = now + int64(36000)*1000
+		}
+
 		dstIsland.Eggs = append(dstIsland.Eggs, egg)
 		ctx.Reply("gs_send_monster_home", data.MakeGFSObject().PutLong("success", 1).PutInt("sent_to_island", int(dstIsland.IslandID)).PutLong("user_monster_id", umid))
 

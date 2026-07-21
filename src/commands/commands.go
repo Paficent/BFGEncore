@@ -104,7 +104,7 @@ func builtins() []*Command {
 		{
 			Name:  "set_level",
 			Usage: "set_level <bbb_id> <level>",
-			Help:  "set a player's level (1-100)",
+			Help:  "set a player's level (1-30)",
 			Run: func(r *Registry, args []string) (string, error) {
 				if len(args) != 2 {
 					return "", fmt.Errorf("usage: set_level <bbb_id> <level>")
@@ -114,8 +114,8 @@ func builtins() []*Command {
 					return "", err
 				}
 				level, err := strconv.Atoi(args[1])
-				if err != nil || level < 1 || level > 100 {
-					return "", fmt.Errorf("level must be a number from 1 to 100")
+				if err != nil || level < 1 || level > 30 {
+					return "", fmt.Errorf("level must be a number from 1 to 30")
 				}
 				p.Level = level
 				return r.persist(p, fmt.Sprintf("set %s to level %d", label(p), level))

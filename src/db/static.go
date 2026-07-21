@@ -81,7 +81,7 @@ func LoadStatic(db *DB) *StaticData {
 		monsters:       loadMonsters(db),
 		structures:     loadStructures(db),
 		islands:        loadIslands(db),
-		monsterLevels:  monLevels,
+		monsterLevels:  loadMonsterLevels(db),
 		teleports:      loadTeleportInfo(db),
 		breedingCombos: loadBreedingCombos(db),
 		scratchByType:  loadScratchOffs(db),

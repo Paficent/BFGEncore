@@ -43,6 +43,7 @@ func registerStructureHandlers(m *Manager) {
 			X:                 ctx.Int("pos_x"),
 			Y:                 ctx.Int("pos_y"),
 			IsComplete:        1,
+			IsObstacleComplete: 1,
 			IsUpgrading:       0,
 			Flip:              ctx.Int("flip"),
 			Muted:             0,
@@ -176,7 +177,7 @@ func registerStructureHandlers(m *Manager) {
 			ctx.Fail("gs_start_upgrade_structure", "Upgrade data missing")
 			return
 		}
-		if !p.Buy(int64(cost.CostCoins), int64(cost.CostDiamonds), int64(cost.CostEth)) {
+		if !p.BuyInIsland(int64(cost.CostCoins), int64(cost.CostDiamonds), int64(cost.CostEth), island) {
 			ctx.Fail("gs_start_upgrade_structure", "Not enough currency")
 			return
 		}
@@ -303,7 +304,8 @@ func registerStructureHandlers(m *Manager) {
 			m.Push(p.BBBID, "gs_clear_obstacle", obstacleClearedPayload(p, usid))
 			return
 		}
-		s.IsComplete = 0
+		s.IsObstacleComplete = 0
+		//the original complete makes it that traffic cone thingy which is flawed in the games design so now variables it is
 		s.BuildingCompleted = nowMS() + clearMS
 		bbbID := p.BBBID
 		m.ScheduleAt(clearObstacleKey(bbbID, usid), s.BuildingCompleted, func() {
