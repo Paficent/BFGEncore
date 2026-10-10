@@ -72,6 +72,7 @@ type Monster struct {
 	UserIslandID    int64
 	MonsterID       int64
 	ParentMonsterID int64
+	ParentIslandID  int64
 	X               int
 	Y               int
 	Flip            int
@@ -88,6 +89,8 @@ type Monster struct {
 	MegaCurrent     int
 	MegaStart       int64
 	MegaFinish      int64
+	BoxedEggs 		string
+	BoxRequirements string
 }
 
 func (m *Monster) GetSFSObject() *data.GFSObject {
@@ -113,6 +116,8 @@ func (m *Monster) GetSFSObject() *data.GFSObject {
 		PutLong("last_feeding", m.DateCreated).
 		PutLong("date_created", m.DateCreated).
 		PutLong("last_collection", m.LastCollection).
+		PutUtfString("boxed_eggs", m.BoxedEggs).
+		PutUtfString("box_requirements", m.BoxRequirements).
 		PutUtfString("name", m.Name)
 	if m.hasMega() {
 		obj.PutGFSObject("megamonster", m.megaObject())
@@ -121,7 +126,7 @@ func (m *Monster) GetSFSObject() *data.GFSObject {
 }
 
 func (m *Monster) goldSFSObject(islandID int64) *data.GFSObject {
-	return data.MakeGFSObject().
+	obj := data.MakeGFSObject().
 		PutLong("user_monster_id", m.UserMonsterID).
 		PutLong("user_island_id", islandID).
 		PutLong("island", islandID).
@@ -138,7 +143,13 @@ func (m *Monster) goldSFSObject(islandID int64) *data.GFSObject {
 		PutInt("collected_coins", 0).
 		PutInt("collected_ethereal", 0).
 		PutInt("in_hotel", 0).
-		PutBool("limited", false)
+		PutUtfString("boxed_eggs", m.BoxedEggs).
+		PutUtfString("box_requirements", m.BoxRequirements).
+		PutBool("limited", false)	
+	if m.hasMega() {
+		obj.PutGFSObject("megamonster", m.megaObject())
+	}
+	return obj
 }
 
 func (m *Monster) hasMega() bool {
@@ -228,6 +239,7 @@ type Island struct {
 	Structures   []*Structure
 	GoldMonsters []*Monster `json:"gold_monsters,omitempty"` // Don't break older saves
 	Monsters     []*Monster
+	KillMonsters []*int
 	Eggs         []*Egg
 	Breedings    []*Breeding
 	Bakings      []*Baking

@@ -69,6 +69,7 @@ type Island struct {
 	CostCoins    int             `json:"cost_coins"`
 	CostDiamonds int             `json:"cost_diamonds"`
 	Castle       int             `json:"castle_structure_id"`
+	Obstacle   int               `json:"obstacle_island_id"`
 	MinServer    string          `json:"min_server_version"`
 }
 
@@ -119,14 +120,15 @@ type Structure struct {
 }
 
 type Monster struct {
-	ID            int                 `json:"monster_id"`
-	Entity        int                 `json:"entity"`
-	Genes         string              `json:"genes"`
-	Beds          int                 `json:"beds"`
-	Happiness     quoted[[]Happiness] `json:"happiness"`
-	Names         quoted[[]string]    `json:"names"`
-	LevelUpXP     int                 `json:"level_up_xp"`
-	LevelupIsland string              `json:"levelup_island"`
+	ID              int                 `json:"monster_id"`
+	Entity          int                 `json:"entity"`
+	Genes           string              `json:"genes"`
+	Beds            int                 `json:"beds"`
+	Happiness       quoted[[]Happiness] `json:"happiness"`
+	Names           quoted[[]string]    `json:"names"`
+	BoxRequirements string              `json:"box_monster_requirements"`
+	LevelUpXP       int                 `json:"level_up_xp"`
+	LevelupIsland   string              `json:"levelup_island"`
 }
 
 type MonsterLevel struct {

@@ -23,7 +23,7 @@ import (
 	"github.com/Paficent/GoFox2X/data"
 )
 
-const maxDisplayResource = 999_999_999
+const maxDisplayResource = 1_999_999_999
 
 func clampDisplay(v int64) int {
 	if v > maxDisplayResource {
@@ -79,9 +79,13 @@ func newPlayer(bbbID, userID int64, static *db.StaticData) *Player {
 	if info, ok := static.Island(1); ok && info.Castle != 0 {
 		castle = int64(info.Castle)
 	}
+	obstacle := int(-1)
+	if info, ok := static.Island(1); ok && info.Obstacle != 0 {
+		obstacle = int(info.Obstacle)
+	}
 	p.structureSeq = 0
 	p.islandSeq = 1
-	p.Islands = append(p.Islands, p.buildIsland(1, 1, castle))
+	p.Islands = append(p.Islands, p.buildIsland(1, 1, castle, obstacle))
 	return p
 }
 

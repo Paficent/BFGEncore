@@ -89,8 +89,8 @@ func LoadStatic(db *DB) *StaticData {
 }
 
 const (
-	bbsURL   = "https://127.0.0.1:9933"
-	bbsTitle = "placeholder"
+	testURL   = "https://github.com/Paficent/BFGEncore"
+	testTitle = "BFGEncore - Github"
 )
 
 var (

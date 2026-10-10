@@ -19,6 +19,7 @@ package game
 
 import (
 	"strings"
+	"encoding/json"
 
 	"github.com/Paficent/GoFox2X/data"
 )
@@ -95,18 +96,20 @@ func registerMonsterHandlers(m *Manager) {
 		now := nowMS()
 		info, _ := m.Static.Monster(int(egg.MonsterID))
 		monster := &Monster{
-			UserMonsterID:  p.NextMonsterID(),
-			UserIslandID:   island.UserIslandID,
-			MonsterID:      egg.MonsterID,
-			X:              x,
-			Y:              y,
-			Flip:           flip,
-			Level:          1,
-			Happiness:      0,
-			Volume:         1,
-			Name:           randomMonsterName(info.Names),
-			DateCreated:    now,
-			LastCollection: now,
+			UserMonsterID:   p.NextMonsterID(),
+			UserIslandID:    island.UserIslandID,
+			MonsterID:       egg.MonsterID,
+			X:               x,
+			Y:               y,
+			Flip:            flip,
+			Level:           1,
+			Happiness:       0,
+			Volume:          1,
+			Name:            randomMonsterName(info.Names),
+			BoxedEggs:		 "[]",
+			BoxRequirements: info.BoxRequirements,
+			DateCreated:     now,
+			LastCollection:  now,
 		}
 		island.AddMonster(monster)
 
@@ -415,6 +418,10 @@ func registerMonsterHandlers(m *Manager) {
 			ctx.Fail("gs_feed_monster", "Not enough food")
 			return
 		}
+		if mon.Level >= 15 {
+			ctx.Fail("gs_feed_monster", "Monster level 15")
+			return
+		}
 		mon.TimesFed++
 		leveledUp := false
 		if mon.TimesFed >= 4 {
@@ -469,7 +476,7 @@ func registerMonsterHandlers(m *Manager) {
 		maxCurrency := int64(level.MaxCoins)
 		useShards := false
 		timeDivider := 60 // Normal monsters (coin givers) use per minute
-		if mainCurrency == 0 || maxCurrency == 0 {
+		if island.IsEthereal() {
 			mainCurrency = int64(level.Shards)
 			maxCurrency = int64(level.MaxShards)
 			useShards = true
@@ -514,19 +521,29 @@ func registerMonsterHandlers(m *Manager) {
 	m.HandlePlayer("gs_sell_monster", func(ctx *Context, p *Player) {
 		island := ctx.Island()
 		umid := ctx.Int64("user_monster_id")
+		monExists := false
 		mon := island.monster(umid)
-		if mon == nil {
-			ctx.Fail("gs_sell_monster", "Invalid monster ID")
-			return
+		
+		if mon != nil {
+			monExists = true
 		}
-		if island.IsGold() {
-			island.GoldMonsters = remove(island.GoldMonsters, func(m *Monster) bool { return m.UserMonsterID == umid })
-		} else {
-			if info, ok := static.Monster(int(mon.MonsterID)); ok {
-				p.AddProperties(int64(info.CostCoins*3/4), 0, 0, 0, 0)
+		
+	
+		if monExists {
+			if island.IsGold() {
+				island.GoldMonsters = remove(island.GoldMonsters, func(m *Monster) bool { return m.UserMonsterID == umid })
+			} else {
+				if info, ok := static.Monster(int(mon.MonsterID)); ok {
+					if island.IsEthereal() {
+						p.AddProperties(0, 0, 0, 0, int64(info.CostEth*3/4))
+					} else {
+						p.AddProperties(int64(info.CostCoins*3/4), 0, 0, 0, 0)
+					}
+				}
+				island.RemoveMonster(umid)
 			}
-			island.RemoveMonster(umid)
 		}
+		
 		ctx.Reply("gs_sell_monster", data.MakeGFSObject().
 			PutBool("success", true).
 			PutLong("user_monster_id", umid).
@@ -673,6 +690,320 @@ func registerMonsterHandlers(m *Manager) {
 			PutBool("success", true).
 			PutBool("remove_buyback", false).
 			PutGFSArray("properties", p.GetProperties()))
+	})
+	
+	m.HandlePlayer("gs_box_add_monster", func(ctx *Context, p *Player) {
+		island := ctx.Island()
+		umid := ctx.Int64("user_monster_id")
+		boxid := ctx.Int64("user_box_monster_id")
+		mon := island.monster(umid)
+		boxmon := island.monster(boxid)
+		monsterID := int(mon.MonsterID)
+		failure := false
+		
+		if mon == nil {
+			ctx.Fail("gs_box_add_monster", "Invalid monster ID")
+			return
+		}
+		
+		boxEggs := boxmon.BoxedEggs
+		boxRequirements := boxmon.BoxRequirements
+		
+		var box_ids []int
+		var box_requirement_ids []int
+		
+		err := json.Unmarshal([]byte(boxEggs), &box_ids)
+		if err != nil {
+			ctx.Fail("gs_box_add_monster", "error w boxeggs")
+			return
+		}
+		
+		err = json.Unmarshal([]byte(boxRequirements), &box_requirement_ids)
+		if err != nil {
+			ctx.Fail("gs_box_add_monster", "error w boxrequirements")
+			return
+		}
+		
+	
+		for _, id := range box_ids {
+			if id == monsterID {
+				failure = true
+			}
+		}
+		
+		is_mon_required := false
+		
+		for _, id := range box_requirement_ids {
+			if id == monsterID {
+				is_mon_required = true
+			}
+		}
+		
+		if !is_mon_required {
+			failure = true
+		}
+		
+		if failure {
+			ctx.Reply("gs_box_add_monster", data.MakeGFSObject().
+				PutBool("success", false).
+				PutLong("user_monster_id", umid).
+				PutLong("user_box_monster_id", boxid).
+				PutGFSArray("properties", p.GetProperties()))
+			
+			return
+		}
+		
+		
+		
+		box_ids = append(box_ids, monsterID)
+		
+	
+		updatedTable, err := json.Marshal(box_ids)
+		if err != nil {
+			panic(err)
+		}
+
+		updatedEggs := string(updatedTable)
+		
+
+		
+		var homeIsland *Island
+		foundHome := false
+		for _, isl := range p.Islands {
+			if isl.UserIslandID == int64(mon.ParentIslandID) {
+				homeIsland = isl
+				foundHome = true
+				break
+			}
+		}
+		
+		if island.IsGold() {
+			if foundHome {
+			island.GoldMonsters = remove(island.GoldMonsters, func(m *Monster) bool { return m.UserMonsterID == umid })
+			
+			ctx.Reply("gs_box_add_monster", data.MakeGFSObject().
+				PutBool("success", true).
+				PutLong("parent_monster_id", mon.ParentMonsterID).
+				PutLong("user_monster_id", umid).
+				PutLong("user_box_monster_id", boxid).
+				PutGFSArray("properties", p.GetProperties()))
+			
+			parentID := int(mon.ParentMonsterID)
+			homeIsland.RemoveMonster(mon.ParentMonsterID)
+			homeIsland.KillMonsters = append(homeIsland.KillMonsters, &parentID)
+
+			
+			} else {
+				
+			ctx.Reply("gs_display_generic_message", data.MakeGFSObject().
+				PutBool("force_logout", false).
+				PutUtfString("msg", "Target island isnt found. Removing and placing back monster should fix this."))
+				return
+			}
+		} else {
+			island.RemoveMonster(umid)
+		}
+		
+		boxmon.BoxedEggs = updatedEggs
+		if !island.IsGold() {
+		ctx.Reply("gs_box_add_monster", data.MakeGFSObject().
+			PutBool("success", true).
+			PutLong("user_monster_id", umid).
+			PutLong("user_box_monster_id", boxid).
+			PutGFSArray("properties", p.GetProperties()))
+		}
+		
+		ctx.Reply("gs_update_monster", data.MakeGFSObject().
+			PutUtfString("boxed_eggs", updatedEggs).
+			PutLong("user_monster_id", boxid))
+	})
+	
+	m.HandlePlayer("gs_box_purchase_fill_cost", func(ctx *Context, p *Player) {
+		island := ctx.Island()
+		umid := ctx.Int64("user_monster_id")
+		mon := island.monster(umid)
+		boxEggs := mon.BoxedEggs
+		boxRequirements := mon.BoxRequirements
+		
+		var box_ids []int
+		var box_requirement_ids []int
+		
+		err := json.Unmarshal([]byte(boxEggs), &box_ids)
+		if err != nil {
+			ctx.Fail("gs_box_purchase_fill_cost", "error w boxeggs")
+			return
+		}
+		
+		err = json.Unmarshal([]byte(boxRequirements), &box_requirement_ids)
+		if err != nil {
+			ctx.Fail("gs_box_purchase_fill_cost", "error w boxrequirements")
+			return
+		}
+		
+		fill_price := int64((len(box_requirement_ids) - len(box_ids)) * 30)
+		if island.IsGold() {
+			fill_price = fill_price * 10
+		}
+		
+		ctx.Reply("gs_box_purchase_fill_cost", data.MakeGFSObject().
+			PutBool("success", true).
+			PutLong("user_monster_id", umid).
+			PutLong("fill_price", fill_price))
+	})
+	
+	m.HandlePlayer("gs_box_purchase_fill", func(ctx *Context, p *Player) {
+		island := ctx.Island()
+		umid := ctx.Int64("user_monster_id")
+		mon := island.monster(umid)
+		boxEggs := mon.BoxedEggs
+		boxRequirements := mon.BoxRequirements
+		
+		var box_ids []int
+		var box_requirement_ids []int
+		
+		err := json.Unmarshal([]byte(boxEggs), &box_ids)
+		if err != nil {
+			ctx.Fail("gs_box_purchase_fill", "error w boxeggs")
+			return
+		}
+		
+		err = json.Unmarshal([]byte(boxRequirements), &box_requirement_ids)
+		if err != nil {
+			ctx.Fail("gs_box_purchase_fill", "error w boxrequirements")
+			return
+		}
+		
+		fill_price := int64((len(box_requirement_ids) - len(box_ids)) * 30)
+		if island.IsGold() {
+			fill_price = fill_price * 10
+		}
+		if !p.BuyInIsland(int64(0), fill_price, int64(0), island) {
+			ctx.Reply("gs_box_purchase_fill_cost", data.MakeGFSObject().
+				PutBool("success", false).
+				PutLong("user_monster_id", umid).
+				PutLong("fill_price", fill_price))
+			return
+		}
+		
+		mon.BoxedEggs = boxRequirements
+		ctx.Reply("gs_box_purchase_fill", data.MakeGFSObject().
+			PutBool("success", true).
+			PutLong("user_monster_id", umid).
+			PutLong("fill_price", fill_price))
+			
+		ctx.Reply("gs_update_monster", data.MakeGFSObject().
+			PutUtfString("boxed_eggs", mon.BoxedEggs).
+			PutLong("user_monster_id", umid))
+			
+		ctx.Reply("gs_update_properties", data.MakeGFSObject().
+			PutGFSArray("properties", p.GetProperties()))
+	})
+	
+	m.HandlePlayer("gs_box_activate_monster", func(ctx *Context, p *Player) {
+		island := ctx.Island()
+		umid := ctx.Int64("user_monster_id")
+		mon := island.monster(umid)
+		if mon == nil {
+			ctx.Fail("gs_mute_monster", "Invalid monster ID")
+			return
+		}
+		if !(mon.BoxedEggs == mon.BoxRequirements){
+			return
+		}
+		
+		mon.BoxedEggs = ""
+		mon.CollectedCoins = 0
+		ctx.Reply("gs_box_activate_monster", data.MakeGFSObject().
+			PutBool("success", true).
+			PutLong("user_monster_id", umid))
+		ctx.Reply("gs_update_monster", data.MakeGFSObject().
+			PutLong("user_monster_id", umid).
+			PutUtfString("boxed_eggs", mon.BoxedEggs))
+	})
+	
+	m.HandlePlayer("gs_box_add_egg", func(ctx *Context, p *Player) {
+		island := ctx.Island()
+		egg := island.FindEgg(ctx.Int64("user_egg_id"))
+		boxid := ctx.Int64("user_monster_id")
+		boxmon := island.monster(boxid)
+		monsterID := int(egg.MonsterID)
+		failure := false
+		
+		if egg == nil {
+			ctx.Fail("gs_box_add_egg", "Invalid monster ID")
+			return
+		}
+		
+		boxEggs := boxmon.BoxedEggs
+		boxRequirements := boxmon.BoxRequirements
+		
+		var box_ids []int
+		var box_requirement_ids []int
+		
+		err := json.Unmarshal([]byte(boxEggs), &box_ids)
+		if err != nil {
+			ctx.Fail("gs_box_add_egg", "error w boxeggs")
+			return
+		}
+		
+		err = json.Unmarshal([]byte(boxRequirements), &box_requirement_ids)
+		if err != nil {
+			ctx.Fail("gs_box_add_egg", "error w boxrequirements")
+			return
+		}
+		
+	
+		for _, id := range box_ids {
+			if id == monsterID {
+				failure = true
+			}
+		}
+		
+		is_mon_required := false
+		
+		for _, id := range box_requirement_ids {
+			if id == monsterID {
+				is_mon_required = true
+			}
+		}
+		
+		if !is_mon_required {
+			failure = true
+		}
+		
+		if failure {
+			ctx.Reply("gs_box_add_egg", data.MakeGFSObject().
+				PutBool("success", false).
+				PutLong("user_egg_id", ctx.Int64("user_egg_id")).
+				PutLong("user_box_monster_id", boxid).
+				PutGFSArray("properties", p.GetProperties()))
+				
+			return
+		}
+		
+		box_ids = append(box_ids, monsterID)
+		
+	
+		updatedTable, err := json.Marshal(box_ids)
+		if err != nil {
+			panic(err)
+		}
+
+		updatedEggs := string(updatedTable)
+		
+		boxmon.BoxedEggs = updatedEggs
+		
+		island.RemoveEgg(ctx.Int64("user_egg_id"))
+		
+		ctx.Reply("gs_box_add_egg", data.MakeGFSObject().
+			PutBool("success", true).
+			PutLong("user_egg_id", ctx.Int64("user_egg_id")).
+			PutLong("user_box_monster_id", boxid).
+			PutGFSArray("properties", p.GetProperties()))
+			
+		ctx.Reply("gs_update_monster", data.MakeGFSObject().
+			PutUtfString("boxed_eggs", updatedEggs).
+			PutLong("user_monster_id", boxid))
 	})
 }
 

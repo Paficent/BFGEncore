@@ -89,6 +89,13 @@ func (m *Manager) finishUpgradeNow(p *Player, s *Structure) {
 	if s.UpgradeTo != 0 {
 		s.StructureID = s.UpgradeTo
 	}
+	
+	static := m.Static
+	cost, ok := static.Structure(int(s.UpgradeTo))
+	
+	if ok {
+		p.AddProperties(0, 0, 0, int64(cost.XP), 0)
+	}
 	s.UpgradeTo = 0
 	s.IsUpgrading = 0
 	s.IsComplete = 1

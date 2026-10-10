@@ -186,12 +186,9 @@ func registerStructureHandlers(m *Manager) {
 		s.UpgradeTo = int64(nextID)
 		s.IsUpgrading = 1
 		s.IsComplete = 0
+		s.DateCreated = now
 		s.BuildingCompleted = now + int64(cost.BuildTime)*1000
 
-		bbbID := p.BBBID
-		m.ScheduleAt(upgradeKey(bbbID, usid), s.BuildingCompleted, func() {
-			m.completeUpgrade(bbbID, usid)
-		})
 
 		props := p.GetProperties()
 		props.AddSFSObject(data.MakeGFSObject().PutInt("is_complete", 0))
@@ -228,17 +225,15 @@ func registerStructureHandlers(m *Manager) {
 			ctx.Fail("gs_speed_up_structure", "Not enough diamonds!")
 			return
 		}
-
-		wasUpgrade := s.UpgradeTo != 0
-		m.finishUpgradeNow(p, s)
-
-		ctx.Reply("gs_speed_up_structure", data.MakeGFSObject().
+		s.BuildingCompleted = nowMS()
+		
+		props := p.GetProperties()
+		props.AddSFSObject(data.MakeGFSObject().PutLong("building_completed", s.BuildingCompleted))
+		
+		ctx.Reply("gs_update_structure", data.MakeGFSObject().
 			PutLong("success", 1).
 			PutLong("user_structure_id", usid).
-			PutGFSArray("properties", p.GetProperties()))
-		if wasUpgrade {
-			ctx.Reply("gs_finish_upgrade_structure", upgradedStructurePayload(p, s))
-		}
+			PutGFSArray("properties", props))
 	})
 
 	m.HandlePlayer("gs_finish_structure", func(ctx *Context, p *Player) {
@@ -306,11 +301,10 @@ func registerStructureHandlers(m *Manager) {
 		}
 		s.IsObstacleComplete = 0
 		//the original complete makes it that traffic cone thingy which is flawed in the games design so now variables it is
+		s.DateCreated = nowMS()
 		s.BuildingCompleted = nowMS() + clearMS
-		bbbID := p.BBBID
-		m.ScheduleAt(clearObstacleKey(bbbID, usid), s.BuildingCompleted, func() {
-			m.completeClearObstacle(bbbID, usid)
-		})
+		// bbbID := p.BBBID
+
 		ctx.Reply("gs_start_obstacle", data.MakeGFSObject().
 			PutLong("success", 1).
 			PutLong("user_structure_id", usid).
@@ -331,12 +325,15 @@ func registerStructureHandlers(m *Manager) {
 			ctx.Fail("gs_clear_obstacle_speed_up", "Not enough diamonds!")
 			return
 		}
-
-		m.CancelTimer(clearObstacleKey(p.BBBID, usid))
-		m.removeObstacle(p, usid)
-
-		ctx.Reply("gs_clear_obstacle_speed_up", data.MakeGFSObject().PutBool("success", true))
-		m.Push(p.BBBID, "gs_clear_obstacle", obstacleClearedPayload(p, usid))
+		s.BuildingCompleted = nowMS()
+		
+		props := p.GetProperties()
+		props.AddSFSObject(data.MakeGFSObject().PutLong("building_completed", s.BuildingCompleted))
+		
+		ctx.Reply("gs_update_structure", data.MakeGFSObject().
+			PutLong("success", 1).
+			PutLong("user_structure_id", usid).
+			PutGFSArray("properties", props))
 	})
 
 	m.HandlePlayer("gs_collect_from_mine", func(ctx *Context, p *Player) {
@@ -357,11 +354,18 @@ func registerStructureHandlers(m *Manager) {
 
 		now := nowMS()
 		p.AddProperties(0, int64(mineDiamonds), 0, 0, 0)
-		ctx.Reply("gs_update_properties", data.MakeGFSObject().PutGFSArray("properties", p.GetProperties()))
-		ctx.Reply("gs_collect_from_mine", data.MakeGFSObject().PutLong("success", 1))
+		mineStructure.BuildingCompleted = now
+		mineStructure.LastCollection = now
+		
+		props := data.MakeGFSArray()
+		props.AddSFSObject(data.MakeGFSObject().PutLong("last_collection", now))
+		
 		ctx.Reply("gs_update_structure", data.MakeGFSObject().
-			PutLong("user_structure_id", mineStructure.UserStructureID).
-			PutLong("last_collection", now).
-			PutGFSArray("properties", p.GetProperties()))
+			PutGFSArray("properties", props).
+			PutLong("user_structure_id", mineStructure.UserStructureID))
+		
+		ctx.Reply("gs_update_properties", data.MakeGFSObject().PutGFSArray("properties", p.GetProperties()))
+		ctx.Reply("gs_collect_from_mine", data.MakeGFSObject().PutBool("success", true))
+
 	})
 }

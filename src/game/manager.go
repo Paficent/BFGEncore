@@ -114,7 +114,6 @@ func New(static *db.StaticData, store *save.Store, debug bool) *Manager {
 	registerQuestHandlers(m)
 	registerBakingHandlers(m)
 
-	m.rearmUpgradeTimers()
 	return m
 }
 

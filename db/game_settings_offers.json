@@ -1,0 +1,82 @@
+[
+    {
+        "client_platform": "ios",
+        "client_version": "1.0.4",
+        "conversions": 12608,
+        "enabled": 1,
+        "impressions": 567427,
+        "name": "tapjoy",
+        "offer_id": 1,
+        "viewed": 19423
+    },
+    {
+        "client_platform": "android",
+        "client_version": "1.0.4",
+        "conversions": 12608,
+        "enabled": 1,
+        "impressions": 144301,
+        "name": "tapjoy",
+        "offer_id": 2,
+        "viewed": 19095
+    },
+    {
+        "client_platform": "android",
+        "client_version": "1.1.0",
+        "conversions": 59,
+        "enabled": 0,
+        "impressions": 112113,
+        "name": "trialpay",
+        "offer_id": 3,
+        "viewed": 2372
+    },
+    {
+        "client_platform": "ios",
+        "client_version": "1.1.1",
+        "conversions": 2,
+        "enabled": 0,
+        "impressions": 3050,
+        "name": "trialpay",
+        "offer_id": 4,
+        "viewed": 423
+    },
+    {
+        "client_platform": "android",
+        "client_version": "1.1.0",
+        "conversions": 0,
+        "enabled": 0,
+        "impressions": 0,
+        "name": "w3i",
+        "offer_id": 5,
+        "viewed": 43
+    },
+    {
+        "client_platform": "ios",
+        "client_version": "1.1.1",
+        "conversions": 0,
+        "enabled": 0,
+        "impressions": 0,
+        "name": "w3i",
+        "offer_id": 6,
+        "viewed": 43
+    },
+    {
+        "client_platform": "amazon",
+        "client_version": "1.1.6",
+        "conversions": 26,
+        "enabled": 1,
+        "impressions": 1029,
+        "name": "tapjoy",
+        "offer_id": 7,
+        "viewed": 103
+    },
+    {
+        "client_platform": "playphone",
+        "client_version": "1.2.0",
+        "conversions": 4,
+        "enabled": 1,
+        "impressions": 99,
+        "name": "tapjoy",
+        "offer_id": 9,
+        "viewed": 16
+    }
+]

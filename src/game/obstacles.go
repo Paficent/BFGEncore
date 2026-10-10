@@ -52,7 +52,7 @@ func obstacleBase(islandID int64) int {
 	return obstacleIslandId
 }
 
-func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
+func (p *Player) buildIsland(userIslandID, islandID, castle int64, obstacle int) *Island {
 	now := nowMS()
 	isl := &Island{UserIslandID: userIslandID, IslandID: islandID, BBBID: p.BBBID}
 	add := func(structureID int64, x, y int) {
@@ -73,11 +73,10 @@ func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
 		})
 	}
 	add(castle, 29, 9)
-	if islandID != 6 { // don't add breeding structure and nursery to gold island
+	if islandID != 6 { // don't add nursery to gold island
 		add(1, 35, 17)
-		add(2, 21, 3)
 	}
-	if base := obstacleBase(islandID); base > 0 {
+	if base := obstacle; base > 0 {
 		for i := range obstaclePosX {
 			add(int64(base+obstacleOffsets[i]), obstaclePosX[i], obstaclePosY[i])
 		}
@@ -85,7 +84,7 @@ func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
 	return isl
 }
 
-func (p *Player) NewIsland(islandID, castle int64) *Island {
+func (p *Player) NewIsland(islandID, castle int64, obstacle int) *Island {
 	p.islandSeq++
-	return p.buildIsland(p.islandSeq, islandID, castle)
+	return p.buildIsland(p.islandSeq, islandID, castle, obstacle)
 }

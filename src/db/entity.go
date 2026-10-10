@@ -37,12 +37,11 @@ func addEntityData(db *DB, obj *data.GFSObject, entityID int) {
 	obj.PutInt("size_x", e.SizeX)
 	obj.PutInt("size_y", e.SizeY)
 	obj.PutInt("level", e.Level)
-	obj.PutInt("buildTime", e.BuildTime*1000)
 	obj.PutInt("build_time", e.BuildTime*1000)
 	obj.PutInt("cost_coins", e.CostCoins)
 	obj.PutInt("cost_eth_currency", e.CostEth)
 	obj.PutInt("cost_diamonds", e.CostDiamonds)
-	obj.PutInt("cost_sale", e.CostSale)
+	//obj.PutInt("cost_sale", e.CostSale)
 
 	obj.PutUtfString("keywords", e.Keywords)
 	obj.PutUtfString("min_server_version", orDefault(e.MinServer, "0.0"))
