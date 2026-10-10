@@ -1,8 +1,8 @@
 {
   "starting_coins": 1200,
-  "starting_diamonds": 15,
-  "starting_food": 1000,
+  "starting_diamonds": 12,
+  "starting_food": 0,
   "starting_xp": 0,
-  "starting_shards": 100,
+  "starting_shards": 0,
   "starting_level": 1
 }

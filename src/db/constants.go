@@ -31,16 +31,18 @@ type Constants struct {
 	StartingXP       int64 `json:"starting_xp"`
 	StartingShards   int64 `json:"starting_shards"`
 	StartingLevel    int   `json:"starting_level"`
+	CustomLogon      string `json:"login_string"`
 }
 
 func DefaultConstants() Constants {
 	return Constants{
-		StartingCoins:    750_000_000,
-		StartingDiamonds: 1_000_000,
-		StartingFood:     250_000_000,
+		StartingCoins:    120_0,
+		StartingDiamonds: 12,
+		StartingFood:     0,
 		StartingXP:       0,
-		StartingShards:   100_000_000,
+		StartingShards:   0,
 		StartingLevel:    1,
+		CustomLogon:    "Welcome to BFG Encore!",
 	}
 }
 

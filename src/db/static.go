@@ -81,7 +81,7 @@ func LoadStatic(db *DB) *StaticData {
 		monsters:       loadMonsters(db),
 		structures:     loadStructures(db),
 		islands:        loadIslands(db),
-		monsterLevels:  monLevels,
+		monsterLevels:  loadMonsterLevels(db),
 		teleports:      loadTeleportInfo(db),
 		breedingCombos: loadBreedingCombos(db),
 		scratchByType:  loadScratchOffs(db),
@@ -89,8 +89,8 @@ func LoadStatic(db *DB) *StaticData {
 }
 
 const (
-	bbsURL   = "https://127.0.0.1:9933"
-	bbsTitle = "placeholder"
+	testURL   = "https://github.com/Paficent/BFGEncore"
+	testTitle = "BFGEncore - Github"
 )
 
 var (

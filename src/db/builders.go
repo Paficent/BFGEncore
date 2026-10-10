@@ -152,22 +152,17 @@ func getIslands(db *DB) *data.GFSArray {
 			PutInt("cost_coins", r.CostCoins).
 			PutInt("cost_diamonds", r.CostDiamonds).
 			PutInt("castle_structure_id", r.Castle).
-			PutUtfString("remix_url", bbsURL).
-			PutUtfString("remix_url_2", bbsURL)
+			PutUtfString("remix_url", testURL).
+			PutUtfString("remix_url_2", testURL)
 
 		g := r.Graphic.V
 		island.PutGFSObject("graphic", data.MakeGFSObject().
 			PutUtfString("file", jstr(g["file"])).
 			PutUtfString("tileset", jstr(g["tileset"])).
-			PutUtfString("grid", "main_grid.bin").
 			PutUtfString("bg", jstr(g["bg"])))
-		island.PutUtfString("grid", "main_grid.bin")
 
 		monsters := data.MakeGFSArray()
 		for _, m := range monstersByIsland[r.ID] {
-			if skipMonsterIDs[m.Monster] {
-				continue
-			}
 			monsters.AddSFSObject(data.MakeGFSObject().
 				PutInt("monster", m.Monster).
 				PutUtfString("instrument", m.Instrument))
@@ -188,9 +183,6 @@ func getIslands(db *DB) *data.GFSArray {
 func getStructures(db *DB) *data.GFSArray {
 	now := nowMS()
 	return buildArray(db.Structures, func(r Structure) *data.GFSObject {
-		if skipStructureIDs[r.ID] {
-			return nil
-		}
 		structure := data.MakeGFSObject().
 			PutInt("structure_id", r.ID).
 			PutInt("id", r.ID).
@@ -219,15 +211,12 @@ func getMonsters(db *DB, levels map[[2]int]LevelInfo) *data.GFSArray {
 	}
 
 	return buildArray(db.Monsters, func(r Monster) *data.GFSObject {
-		if skipMonsterIDs[r.ID] {
-			return nil
-		}
 		monster := data.MakeGFSObject().
 			PutInt("monster_id", r.ID).
 			PutInt("id", r.ID).
 			PutInt("entity_id", r.Entity).
 			PutUtfString("genes", r.Genes).
-			PutUtfString("common_name", "Monster").
+			PutUtfString("box_requirements", r.BoxRequirements).
 			PutUtfString("spore_graphic", "spore_"+r.Genes).
 			PutBool("limited", true).
 			PutLong("last_changed", now).
@@ -252,17 +241,9 @@ func getMonsters(db *DB, levels map[[2]int]LevelInfo) *data.GFSArray {
 		monster.PutInt("level_up_xp", r.LevelUpXP)
 		monster.PutUtfString("levelup_island", r.LevelupIsland)
 
-		binsID := monsterBinIDs[r.ID]
-		if strings.EqualFold(r.LevelupIsland, "ethereal") {
-			binsID = etherealBinIDs[r.ID]
-		}
-		if binsID != "" {
-			monster.PutUtfString("bins_id", binsID)
-			monster.PutUtfString("bin_id", binsID)
-		}
 
-		monster.PutUtfString("link_title", bbsTitle)
-		monster.PutUtfString("link_address", bbsURL)
+		monster.PutUtfString("link_title", testTitle)
+		monster.PutUtfString("link_address", testURL)
 
 		addEntityData(db, monster, r.Entity)
 

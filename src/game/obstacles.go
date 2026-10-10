@@ -21,17 +21,38 @@ package game
 var obstaclePosX = []int{14, 5, 9, 22, 7, 6, 16, 5, 7, 11, 13, 10, 20, 15, 12, 16, 22, 11, 26, 24, 18, 23, 3, 16, 2, 8, 14, 28, 6, 16, 13, 2, 22, 19, 11, 13, 28, 29, 22, 19, 6, 14, 26, 11, 12, 17, 21, 10, 7, 17, 1, 15, 9, 19, 25, 14, 21, 19, 10, 9}
 var obstaclePosY = []int{12, 26, 21, 32, 17, 14, 27, 23, 27, 9, 21, 28, 35, 17, 31, 22, 26, 17, 31, 33, 29, 28, 20, 34, 23, 32, 33, 22, 31, 10, 23, 18, 23, 12, 13, 29, 20, 24, 9, 32, 21, 10, 22, 20, 34, 13, 25, 24, 9, 36, 20, 36, 9, 37, 21, 26, 29, 22, 14, 34}
 var obstacleOffsets = []int{0, 5, 3, 4, 1, 2, 4, 3, 0, 5, 0, 2, 1, 3, 0, 1, 3, 4, 5, 0, 1, 2, 3, 0, 1, 3, 4, 0, 1, 2, 3, 5, 4, 0, 1, 1, 3, 1, 0, 1, 4, 0, 0, 2, 0, 3, 0, 0, 3, 4, 0, 3, 0, 0, 1, 3, 0, 0, 3, 1}
-var obstacleBasePerIsland = []int{106, 112, 118, 125, 131, -1, 194, 208, -1, -1, -1, -1, 361}
 
 func obstacleBase(islandID int64) int {
-	idx := int(islandID) - 1
-	if idx < 0 || idx >= len(obstacleBasePerIsland) {
-		return -1
+	obstacleIslandId := -1
+
+	// you dont have to put -1 for later islands, like if you wanted mirror islands you could either change 
+	// case 1:
+	// to
+	// case 1, 101:
+	// or just have case 101: straight up for unique obstacles
+
+	switch islandID{
+	case 1:
+		obstacleIslandId = 106
+	case 2:
+		obstacleIslandId = 112
+	case 3:
+		obstacleIslandId = 118
+	case 4:
+		obstacleIslandId = 125
+	case 5:
+		obstacleIslandId = 131
+	case 7:
+		obstacleIslandId = 194
+	case 8:
+		obstacleIslandId = 208
 	}
-	return obstacleBasePerIsland[idx]
+
+	obstacleIslandId = int(obstacleIslandId)
+	return obstacleIslandId
 }
 
-func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
+func (p *Player) buildIsland(userIslandID, islandID, castle int64, obstacle int) *Island {
 	now := nowMS()
 	isl := &Island{UserIslandID: userIslandID, IslandID: islandID, BBBID: p.BBBID}
 	add := func(structureID int64, x, y int) {
@@ -46,16 +67,16 @@ func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
 			LastCollection:    now,
 			Muted:             0,
 			IsComplete:        1,
+			IsObstacleComplete:        1,
 			IsUpgrading:       0,
 			BuildingCompleted: now,
 		})
 	}
 	add(castle, 29, 9)
-	if islandID != 6 { // don't add breeding structure and nursery to gold island
+	if islandID != 6 { // don't add nursery to gold island
 		add(1, 35, 17)
-		add(2, 21, 3)
 	}
-	if base := obstacleBase(islandID); base > 0 {
+	if base := obstacle; base > 0 {
 		for i := range obstaclePosX {
 			add(int64(base+obstacleOffsets[i]), obstaclePosX[i], obstaclePosY[i])
 		}
@@ -63,7 +84,7 @@ func (p *Player) buildIsland(userIslandID, islandID, castle int64) *Island {
 	return isl
 }
 
-func (p *Player) NewIsland(islandID, castle int64) *Island {
+func (p *Player) NewIsland(islandID, castle int64, obstacle int) *Island {
 	p.islandSeq++
-	return p.buildIsland(p.islandSeq, islandID, castle)
+	return p.buildIsland(p.islandSeq, islandID, castle, obstacle)
 }

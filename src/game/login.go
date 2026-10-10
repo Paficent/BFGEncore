@@ -57,13 +57,17 @@ func (m *Manager) handleLogin(c *transport.Conn, msg *protocol.Message) {
 
 func (m *Manager) sendLoginSequence(c *transport.Conn, bbbID int64) {
 	settings := data.MakeGFSObject().PutGFSArray("user_game_settings", m.Static.GameSettings)
+	constants := m.Static.Constants
+	
 	m.reply(c, "game_settings", settings)
 
 	m.reply(c, "gs_initialized", data.MakeGFSObject().PutLong("bbb_id", bbbID))
-
+	if constants.CustomLogon == "" {
+		return
+	}
 	welcome := data.MakeGFSObject().
 		PutBool("force_logout", false).
-		PutUtfString("msg", "Welcome to BFG: Encore!")
+		PutUtfString("msg", constants.CustomLogon)
 	m.reply(c, "gs_display_generic_message", welcome)
 }
 

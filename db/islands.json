@@ -10,6 +10,7 @@
     "cost_diamonds": 0,
     "midi": "world01.mid",
     "castle_structure_id": 7,
+	"obstacle_island_id" : 106,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1
@@ -25,6 +26,7 @@
     "cost_diamonds": 0,
     "midi": "world02.mid",
     "castle_structure_id": 12,
+	"obstacle_island_id" : 112,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1
@@ -40,6 +42,7 @@
     "cost_diamonds": 0,
     "midi": "world03.mid",
     "castle_structure_id": 17,
+	"obstacle_island_id" : 118,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1
@@ -55,6 +58,7 @@
     "cost_diamonds": 0,
     "midi": "world04.mid",
     "castle_structure_id": 22,
+	"obstacle_island_id" : 125,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1
@@ -70,6 +74,7 @@
     "cost_diamonds": 0,
     "midi": "world05.mid",
     "castle_structure_id": 27,
+	"obstacle_island_id" : 131,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1
@@ -100,6 +105,7 @@
     "cost_diamonds": 0,
     "midi": "world07.mid",
     "castle_structure_id": 200,
+	"obstacle_island_id" : 194,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1
@@ -115,6 +121,7 @@
     "cost_diamonds": 0,
     "midi": "world08.mid",
     "castle_structure_id": 214,
+	"obstacle_island_id" : 208,
     "remix_url": "",
     "remix_url_2": "",
     "enabled": 1

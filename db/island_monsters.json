@@ -949,38 +949,26 @@
   },
   {
     "island_monster_id": 222,
-    "island": 3,
-    "monster": 79,
-    "instrument": "003_P01.bin"
-  },
-  {
-    "island_monster_id": 223,
-    "island": 1,
-    "monster": 80,
-    "instrument": "001_P02.bin"
-  },
-  {
-    "island_monster_id": 224,
     "island": 6,
     "monster": 39,
     "instrument": "006_F.bin"
   },
   {
-    "island_monster_id": 225,
+    "island_monster_id": 223,
     "island": 7,
-    "monster": 81,
+    "monster": 79,
     "instrument": "007_GM.bin"
   },
   {
-    "island_monster_id": 226,
+    "island_monster_id": 224,
     "island": 7,
-    "monster": 83,
+    "monster": 80,
     "instrument": "007_KM.bin"
   },
   {
-    "island_monster_id": 227,
+    "island_monster_id": 225,
     "island": 7,
-    "monster": 82,
+    "monster": 81,
     "instrument": "007_LM.bin"
   }
 ]

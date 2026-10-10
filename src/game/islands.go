@@ -47,7 +47,7 @@ func registerIslandHandlers(m *Manager) {
 			ctx.Fail("gs_buy_island", "Not enough resources")
 			return
 		}
-		island := p.NewIsland(islandID, int64(info.Castle))
+		island := p.NewIsland(islandID, int64(info.Castle), info.Obstacle)
 		p.Islands = append(p.Islands, island)
 		ctx.Reply("gs_buy_island", data.MakeGFSObject().
 			PutLong("success", 1).
@@ -58,12 +58,16 @@ func registerIslandHandlers(m *Manager) {
 	m.HandlePlayer("gs_change_island", func(ctx *Context, p *Player) {
 		islandID := ctx.Int64("user_island_id")
 		owned := false
+		var newIsland *Island
+
 		for _, isl := range p.Islands {
 			if isl.UserIslandID == islandID {
 				owned = true
+				newIsland = isl
 				break
 			}
 		}
+
 		resp := data.MakeGFSObject()
 		if owned {
 			p.ActiveIsland = islandID
@@ -71,8 +75,21 @@ func registerIslandHandlers(m *Manager) {
 		} else {
 			resp.PutBool("success", false).PutUtfString("error", "You don't have this island")
 		}
+		
 		resp.PutGFSObject("hidden_objects", data.MakeGFSObject().PutGFSArray("objects", data.MakeGFSArray()))
 		ctx.Reply("gs_change_island", resp)
+		
+		if owned {
+			for _, id := range newIsland.KillMonsters {
+				ctx.Reply("gs_sell_monster", data.MakeGFSObject().
+				
+					PutLong("pure_destroy", 1).
+					PutLong("user_monster_id", int64(*id)))
+			}
+			
+			newIsland.KillMonsters = []*int{}
+
+		}
 	})
 
 	m.HandlePlayer("gs_light_torch", func(ctx *Context, p *Player) {

@@ -58,10 +58,5 @@
     "gene_id": 14,
     "gene_letter": "M",
     "gene_graphic": "gene_toxic"
-  },
-  {
-    "gene_id": 15,
-    "gene_letter": "P",
-    "gene_graphic": "gene_nightmare"
   }
 ]

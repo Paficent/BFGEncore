@@ -241,16 +241,23 @@ func registerEconomyHandlers(m *Manager) {
 		}
 
 		giMonster := &Monster{
-			UserMonsterID:   p.NextMonsterID(),
-			ParentMonsterID: umid,
-			MonsterID:       mon.MonsterID,
-			X:               x,
-			Y:               y,
-			Flip:            flip,
-			Level:           mon.Level,
-			Name:            mon.Name,
-			Volume:          mon.Volume,
-			Muted:           mon.Muted,
+			UserMonsterID:    p.NextMonsterID(),
+			ParentMonsterID : umid,
+			ParentIslandID:   parentIslandID,
+			MonsterID:        mon.MonsterID,
+			X:                x,
+			Y:                y,
+			Flip:             flip,
+			Level:            mon.Level,
+			MegaPerma:        mon.MegaPerma,
+			MegaCurrent:      mon.MegaCurrent,
+			MegaStart:        mon.MegaStart,
+			MegaFinish:       mon.MegaFinish,
+			Name:             mon.Name,
+			Volume:           mon.Volume,
+			Muted:            mon.Muted,
+			BoxedEggs:		  "[]",
+			BoxRequirements:  "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,31]",
 		}
 		goldIsland.GoldMonsters = append(goldIsland.GoldMonsters, giMonster)
 

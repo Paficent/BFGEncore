@@ -18,13 +18,14 @@
 package db
 
 type MonsterInfo struct {
-	Entity       int
-	CostCoins    int
-	CostDiamonds int
-	CostEth      int
-	BuildTime    int
-	XP           int
-	Names        []string
+	Entity          int
+	CostCoins       int
+	CostDiamonds    int
+	CostEth         int
+	BuildTime       int
+	XP              int
+	BoxRequirements string
+	Names           []string
 }
 
 type MineInfo struct {
@@ -57,6 +58,7 @@ type IslandInfo struct {
 	CostCoins    int
 	CostDiamonds int
 	Castle       int
+	Obstacle     int
 }
 
 func loadMonsters(db *DB) map[int]MonsterInfo {
@@ -64,13 +66,14 @@ func loadMonsters(db *DB) map[int]MonsterInfo {
 	for _, m := range db.Monsters {
 		e, _ := db.entity(m.Entity)
 		out[m.ID] = MonsterInfo{
-			Entity:       m.Entity,
-			CostCoins:    e.CostCoins,
-			CostDiamonds: e.CostDiamonds,
-			CostEth:      e.CostEth,
-			BuildTime:    e.BuildTime,
-			XP:           e.XP,
-			Names:        m.Names.V,
+			Entity:          m.Entity,
+			CostCoins:       e.CostCoins,
+			CostDiamonds:    e.CostDiamonds,
+			CostEth:         e.CostEth,
+			BuildTime:       e.BuildTime,
+			XP:              e.XP,
+			Names:           m.Names.V,
+			BoxRequirements: m.BoxRequirements,
 		}
 	}
 	return out
@@ -123,6 +126,7 @@ func loadIslands(db *DB) map[int]IslandInfo {
 			CostCoins:    r.CostCoins,
 			CostDiamonds: r.CostDiamonds,
 			Castle:       r.Castle,
+			Obstacle:     r.Obstacle,
 		}
 	}
 	return out
